@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from tkinter import messagebox
 import mysql.connector
 from client.homepage import HomePage
 from client.loginpage import LoginPage
@@ -10,7 +11,7 @@ ctk.set_default_color_theme("green")
 db_connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="CV&$i7mx$oZDrq", # A modif pour propre PC vu que c'est en local actuellement.
+    password="Teddy2212!", # Modify this for your local setup
     database="discord"
 )
 
@@ -24,23 +25,17 @@ class MainApplication(ctk.CTk):
         self.container.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         self.frames = {}
-        for F in (HomePage, LoginPage):
+        for F in (HomePage, LoginPage, CreateAccountPage):
             page_name = F.__name__
-            frame = F(parent=self.container, controller=self)  # Remove db_connection for HomePage
+            frame = F(parent=self.container, controller=self, db_connection=db_connection)
             self.frames[page_name] = frame
             frame.place(relwidth=1, relheight=1)
-
-        # Pass the db_connection only to CreateAccountPage
-        create_account_frame = CreateAccountPage(parent=self.container, controller=self, db_connection=db_connection)
-        self.frames["CreateAccountPage"] = create_account_frame
-        create_account_frame.place(relwidth=1, relheight=1)
 
         self.show_frame("HomePage")
 
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
-
 
 if __name__ == "__main__":
     app = MainApplication()

@@ -1,10 +1,12 @@
 import customtkinter as ctk
 from tkinter import messagebox
+import mysql.connector
 
 class LoginPage(ctk.CTkFrame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, db_connection):
         super().__init__(parent)
         self.controller = controller
+        self.db_connection = db_connection  # Pass the database connection
 
         # Title
         ctk.CTkLabel(self, text="Login", font=("Arial", 24)).pack(pady=20)
@@ -32,9 +34,17 @@ class LoginPage(ctk.CTkFrame):
     def attempt_login(self):
         email = self.email_entry.get()
         password = self.password_entry.get()
-        # içi la logique pour ce login, pour l'instant un placeholder.
-        if email == "user@example.com" and password == "password123":
+
+        # Query the database to check if the email and password match
+        cursor = self.db_connection.cursor()
+        select_query = "SELECT * FROM account WHERE email = %s AND password = %s"
+        user_data = (email, password)
+        cursor.execute(select_query, user_data)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result:
             messagebox.showinfo("Login Successful", "You have been logged in.")
-            # Et ajouter la transition vers interfaceapplication
+            # Implement the transition to the next interface/application
         else:
             messagebox.showerror("Login Failed", "Invalid email or password.")
