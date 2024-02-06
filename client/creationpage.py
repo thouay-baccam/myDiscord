@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import mysql.connector
+import hashlib
 
 class CreateAccountPage(ctk.CTkFrame):
     def __init__(self, parent, controller, db_connection):
@@ -58,6 +59,13 @@ class CreateAccountPage(ctk.CTkFrame):
 
         return has_uppercase and has_lowercase and has_digit and has_special
 
+    def hash_password(self, password):
+        password = bytes(password, "utf-8")
+        hashed = hashlib.sha256()
+        hashed.update(password)
+        hashed_password = hashed.hexdigest()
+        return hashed_password
+
     def attempt_create_account(self):
         name = self.name_entry.get()
         lastname = self.lastname_entry.get()
@@ -70,6 +78,7 @@ class CreateAccountPage(ctk.CTkFrame):
                 if self.is_valid_password(password):
                     # Combine name and lastname to create the username
                     username = name + lastname
+                    password = self.hash_password(password)
 
                     # Insert user data into the database
                     cursor = self.db_connection.cursor()
