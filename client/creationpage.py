@@ -27,6 +27,12 @@ class CreateAccountPage(ctk.CTkFrame):
         self.password_entry = ctk.CTkEntry(self, width=200, placeholder_text="Password", show="*")
         self.password_entry.pack()
 
+        # Password Verification
+        self.password_label = ctk.CTkLabel(self, text="Verify password")
+        self.password_label.pack(pady=(10,0))
+        self.password_entry = ctk.CTkEntry(self, width=200, placeholder_text="Verify password", show="*")
+        self.password_entry.pack()
+
         # Create Account Button
         self.create_account_button = ctk.CTkButton(self, text="Create Account", command=self.attempt_create_account)
         self.create_account_button.pack(pady=20)
