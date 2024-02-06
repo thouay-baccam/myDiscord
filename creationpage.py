@@ -32,7 +32,7 @@ class CreateAccountPage(ctk.CTkFrame):
         self.create_account_button.pack(pady=20)
 
         # Back Button
-        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("HomePage"))
         self.back_button.pack()
 
     def attempt_create_account(self):

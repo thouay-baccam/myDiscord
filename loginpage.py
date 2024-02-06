@@ -26,7 +26,7 @@ class LoginPage(ctk.CTkFrame):
         self.login_button.pack(pady=20)
 
         # Back Button
-        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("StartPage"))
+        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("HomePage"))
         self.back_button.pack()
 
     def attempt_login(self):
