@@ -10,7 +10,7 @@ ctk.set_default_color_theme("green")
 db_connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="Teddy2212!", # A modif pour propre PC vu que c'est en local actuellement.
+    password="CV&$i7mx$oZDrq", # A modif pour propre PC vu que c'est en local actuellement.
     database="discord"
 )
 
