@@ -1,19 +1,26 @@
+from threading import Thread
 import socket
 
-# Créez un socket TCP/IP
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def Send(socket):
+    while True:
+        msg = input()
+        msg = msg.encode('utf-8')
+        socket.send(msg)
+def Reception(socket):
+    while True:
+        requete_server = socket.recv(500)
+        requete_server = requete_server.decode("utf-8")
+        print(requete_server)
 
-# Connection au serveur
-server_address = ('localhost', 12345)
-client_socket.connect(server_address)
+Host = "86.71.172.58:1212"
+Port = 12345
 
-# Envoye des données
-message = "Hello, server!"
-client_socket.sendall(message.encode())
+#Création du socket
+socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+socket.connect((Host,Port))
 
-# Attend une réponse
-data = client_socket.recv(1024)
-print('Received:', data.decode())
+envoi = Thread(target=Send,args=[socket])
+recep = Thread(target=Reception,args=[socket])
 
-# pour fermer la connexion
-client_socket.close()
+envoi.start()
+recep.start()
