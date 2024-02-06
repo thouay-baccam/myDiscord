@@ -12,7 +12,7 @@ class MainApplication(ctk.CTk):
         self.title('Battias')
         self.geometry('600x600')
 
-        self.container = ctk.CTkFrame(self, width=400, height=400)
+        self.container = ctk.CTkFrame(self, width=400, height=500)
         self.container.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         self.frames = {}
