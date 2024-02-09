@@ -1,27 +1,29 @@
 from threading import Thread
 import socket
+import datetime
 
 clients = []
 
-def broadcast(message, sender_socket):
-    for client in clients:
-        if client != sender_socket:
-            try:
-                client.send(message)
-            except:
-                # En cas d'échec de l'envoi, retirez le client de la liste
-                clients.remove(client)
-
-def handle_client(client_socket):
+def handle_client(client_socket, username):
     while True:
         try:
-            message = client_socket.recv(500)
+            message = client_socket.recv(500).decode('utf-8')
             if not message:
                 break
-            broadcast(message, client_socket)
+            formatted_message = f"{datetime.datetime.now().strftime('%H:%M:%S')} {username}: {message}"
+            broadcast(formatted_message, sender_socket=client_socket)
         except Exception as e:
             print(f"Erreur de réception : {e}")
             break
+
+def broadcast(message, sender_socket=None):
+    for client in clients:
+        if client['socket'] != sender_socket:
+            try:
+                client['socket'].send(message.encode('utf-8'))
+            except:
+                # En cas d'échec de l'envoi, retirez le client de la liste
+                clients.remove(client)
 
 host = "0.0.0.0"
 port = 1212
@@ -34,8 +36,9 @@ print("Le serveur est en écoute sur", host, "et le port", port)
 
 while True:
     client, address = server_socket.accept()
-    clients.append(client)
-    print(f"Le client d'IP {address} s'est connecté")
+    username = client.recv(500).decode('utf-8')  # Attendre le nom d'utilisateur
+    clients.append({'socket': client, 'username': username})
+    print(f"Le client {username} d'IP {address} s'est connecté")
 
-    client_handler = Thread(target=handle_client, args=(client,))
+    client_handler = Thread(target=handle_client, args=(client, username))
     client_handler.start()
