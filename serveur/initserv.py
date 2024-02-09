@@ -1,5 +1,7 @@
 import socket
 import threading
+import signal
+import sys
 
 # Adresse IP et port du serveur
 SERVER_IP = '0.0.0.0'  # Accepte toutes les adresses IP
@@ -18,18 +20,15 @@ print(f"Le serveur écoute sur {SERVER_IP}:{SERVER_PORT}")
 
 # Liste pour stocker les clients connectés
 clients = []
-
+server_running = True  # Variable pour contrôler l'état du serveur
 
 # Fonction pour gérer les messages entrants de chaque client
 def handle_client(client_socket, client_address):
     try:
         while True:
-            # Recevoir les données du client
             data = client_socket.recv(1024)
             if not data:
                 break
-
-            # Diffuser le message à tous les clients
             message = f"{client_address[0]}:{client_address[1]} - {data.decode('utf-8')}"
             print(message)
             broadcast(message, client_socket)
@@ -37,7 +36,6 @@ def handle_client(client_socket, client_address):
     except Exception as e:
         print(f"Erreur de connexion avec {client_address}: {str(e)}")
     finally:
-        # Retirer le client de la liste
         clients.remove(client_socket)
         client_socket.close()
 
@@ -52,11 +50,29 @@ def broadcast(message, sender_socket):
                 print(f"Erreur d'envoi au client: {str(e)}")
 
 
-# Boucle principale pour accepter les connexions des clients
-while True:
-    client_socket, client_address = server_socket.accept()
-    clients.append(client_socket)
+# Fonction pour arrêter proprement le serveur
+def stop_server(signum, frame):
+    global server_running
+    print("Arrêt du serveur...")
+    server_running = False
+    server_socket.close()
+    sys.exit(0)
 
-    # Démarrer un thread pour gérer le client
-    client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
-    client_handler.start()
+
+# Associer la fonction stop_server au signal SIGINT (Ctrl+C)
+signal.signal(signal.SIGINT, stop_server)
+
+# Boucle principale pour accepter les connexions des clients
+while server_running:
+    try:
+        client_socket, client_address = server_socket.accept()
+        clients.append(client_socket)
+        client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
+        client_handler.start()
+
+    except Exception as e:
+        if server_running:
+            print(f"Erreur lors de l'acceptation de la connexion: {str(e)}")
+
+# Si la boucle principale se termine, cela signifie que le serveur a été arrêté
+print("Serveur arrêté.")
