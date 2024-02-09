@@ -18,9 +18,8 @@ def receive(sock):
             break
 
 host = "SENSITIVE_DATA"
-port = 1212  # Port externe configuré sur le routeur
+port = 1212
 
-# Création du socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((host, port))
 
@@ -30,7 +29,7 @@ receive_thread = Thread(target=receive, args=[client_socket])
 send_thread.start()
 receive_thread.start()
 
-# Attendez que les deux threads se terminent avant de fermer le socket
+# Attendez que les threads se terminent avant de fermer le socket
 send_thread.join()
 receive_thread.join()
 
