@@ -1,52 +1,62 @@
-from threading import Thread
 import socket
+import threading
 
-def send(client):
-    while True:
-        msg = input()
-        msg = msg.encode("utf-8")
-        client.send(msg)
-
-def receive(client):
-    while True:
-        try:
-            requete_client = client.recv(500)
-            requete_client = requete_client.decode('utf-8')
-            print(requete_client)
-            if not requete_client:  # Si on perd la connexion
-                print("CLOSE")
-                break
-        except Exception as e:
-            print(f"Erreur de réception : {e}")
-            break
-
-def handle_client(client, address):
-    print(f"Le client d'IP {address} s'est connecté")
-
-    send_thread = Thread(target=send, args=[client])
-    receive_thread = Thread(target=receive, args=[client])
-
-    send_thread.start()
-    receive_thread.start()
-
-    receive_thread.join()
-
-    client.close()
-    print(f"Le client d'IP {address} s'est déconnecté")
-
-# Paramètres du serveur
-host = "0.0.0.0"
-port = 12345
+# Adresse IP et port du serveur
+SERVER_IP = '0.0.0.0'  # Accepte toutes les adresses IP
+SERVER_PORT = 1212
 
 # Création du socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server_socket.bind((host, port))
-server_socket.listen(5)
+# Liaison du socket à l'adresse et au port
+server_socket.bind((SERVER_IP, SERVER_PORT))
 
-print("Le serveur est en écoute sur", host, "et le port", port)
+# Écoute pour les connexions entrantes
+server_socket.listen()
 
+print(f"Le serveur écoute sur {SERVER_IP}:{SERVER_PORT}")
+
+# Liste pour stocker les clients connectés
+clients = []
+
+
+# Fonction pour gérer les messages entrants de chaque client
+def handle_client(client_socket, client_address):
+    try:
+        while True:
+            # Recevoir les données du client
+            data = client_socket.recv(1024)
+            if not data:
+                break
+
+            # Diffuser le message à tous les clients
+            message = f"{client_address[0]}:{client_address[1]} - {data.decode('utf-8')}"
+            print(message)
+            broadcast(message, client_socket)
+
+    except Exception as e:
+        print(f"Erreur de connexion avec {client_address}: {str(e)}")
+    finally:
+        # Retirer le client de la liste
+        clients.remove(client_socket)
+        client_socket.close()
+
+
+# Fonction pour diffuser un message à tous les clients
+def broadcast(message, sender_socket):
+    for client in clients:
+        if client != sender_socket:
+            try:
+                client.send(message.encode('utf-8'))
+            except Exception as e:
+                print(f"Erreur d'envoi au client: {str(e)}")
+
+
+# Boucle principale pour accepter les connexions des clients
 while True:
-    client, address = server_socket.accept()
-    client_handler = Thread(target=handle_client, args=(client, address))
+    client_socket, client_address = server_socket.accept()
+    clients.append(client_socket)
+
+    # Démarrer un thread pour gérer le client
+    client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
     client_handler.start()

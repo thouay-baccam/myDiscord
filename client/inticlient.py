@@ -1,37 +1,37 @@
-from threading import Thread
 import socket
+import threading
 
-def send(sock):
-    while True:
-        msg = input()
-        msg = msg.encode('utf-8')
-        sock.send(msg)
-
-def receive(sock):
-    while True:
-        try:
-            response = sock.recv(500)
-            response = response.decode("utf-8")
-            print(response)
-        except Exception as e:
-            print(f"Erreur de réception : {e}")
-            break
-
-host = "SENSITIVE_DATA"
-port = 1212  # Port externe configuré sur le routeur
+# Adresse IP et port du serveur
+SERVER_IP = 'SENSITIVE_DATA'
+SERVER_PORT = 1212
 
 # Création du socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host, port))
 
-send_thread = Thread(target=send, args=[client_socket])
-receive_thread = Thread(target=receive, args=[client_socket])
+# Connexion au serveur
+client_socket.connect((SERVER_IP, SERVER_PORT))
+
+# Fonction pour envoyer les messages au serveur
+def send_message():
+    while True:
+        message = input()
+        client_socket.send(message.encode('utf-8'))
+
+# Fonction pour recevoir les messages du serveur
+def receive_messages():
+    while True:
+        try:
+            data = client_socket.recv(1024)
+            if not data:
+                break
+            print(data.decode('utf-8'))
+        except Exception as e:
+            print(f"Erreur de réception: {str(e)}")
+            break
+
+# Démarrer deux threads pour envoyer et recevoir des messages simultanément
+send_thread = threading.Thread(target=send_message)
+receive_thread = threading.Thread(target=receive_messages)
 
 send_thread.start()
 receive_thread.start()
-
-# Attendez que les deux threads se terminent avant de fermer le socket
-send_thread.join()
-receive_thread.join()
-
-client_socket.close()
