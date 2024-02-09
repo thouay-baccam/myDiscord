@@ -1,44 +1,37 @@
-from threading import Thread
 import socket
-import datetime
+import threading
 
-def send(sock, username):
+# Adresse IP et port du serveur
+SERVER_IP = 'SENSITIVE_DATA'
+SERVER_PORT = 1212
+
+# Création du socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Connexion au serveur
+client_socket.connect((SERVER_IP, SERVER_PORT))
+
+# Fonction pour envoyer les messages au serveur
+def send_message():
     while True:
         message = input()
-        if message.lower() == 'exit':
-            sock.close()
-            break
-        formatted_message = f"{datetime.datetime.now().strftime('%H:%M:%S')} {username}: {message}"
-        sock.send(formatted_message.encode('utf-8'))
+        client_socket.send(message.encode('utf-8'))
 
-def receive(sock):
+# Fonction pour recevoir les messages du serveur
+def receive_messages():
     while True:
         try:
-            response = sock.recv(500)
-            if not response:
+            data = client_socket.recv(1024)
+            if not data:
                 break
-            print(response.decode('utf-8'))
+            print(data.decode('utf-8'))
         except Exception as e:
-            print(f"Erreur de réception : {e}")
+            print(f"Erreur de réception: {str(e)}")
             break
 
-host = "SENSITIVE_DATA"
-port = 1212
-
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host, port))
-
-username = input("Entrez votre nom d'utilisateur : ")
-client_socket.send(username.encode('utf-8'))
-
-send_thread = Thread(target=send, args=(client_socket, username))
-receive_thread = Thread(target=receive, args=(client_socket,))
+# Démarrer deux threads pour envoyer et recevoir des messages simultanément
+send_thread = threading.Thread(target=send_message)
+receive_thread = threading.Thread(target=receive_messages)
 
 send_thread.start()
 receive_thread.start()
-
-# Attendez que les threads se terminent avant de fermer le socket
-send_thread.join()
-receive_thread.join()
-
-client_socket.close()
