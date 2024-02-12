@@ -1,4 +1,4 @@
-# Comment faire une contribution
+# Comment contribuer
 * Destiné à l'équipe, c'est-à-dire:
     * Raphaël ATTIAS
     * Théo BACCAM
