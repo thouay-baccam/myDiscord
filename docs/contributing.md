@@ -28,12 +28,13 @@
 * feature/chat-vocal
 
 ## Conventions commits
-* type(scope): description courte en français
+* type(scope optionel): description courte en français
 * types:
     * fix: corriger un bug
     * feat: introduire une nouvelle fonctionalité
     * refactor: petit changement du code sans changer son comportement
     * style: rendre le code plus lisible
+    * docs: documentation
 * le scope est la portée des modifications effectués dans un commit
 * exemples:
     * fix(chat-ui): empêché texte qui déborde
@@ -44,4 +45,4 @@
 ## Conclusion
 * Une branche est comme un objectif
 * Un commit est une étape vers cette objectif
-* Un commit correspond à UNE modification ou UNE action, pas plus.
+* Un commit doit être le plus petit possible tant que ça soit raisonnable
