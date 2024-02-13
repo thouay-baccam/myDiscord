@@ -1,9 +1,9 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import mysql.connector
-from .client.homepage import HomePage
-from .client.loginpage import LoginPage
-from .client.creationpage import CreateAccountPage
+from .homepage import HomePage
+from .loginpage import LoginPage
+from .creationpage import CreateAccountPage
 
 
 class MainApplication(ctk.CTk):
