@@ -1,4 +1,4 @@
-from my_discord.main_application import MainApplication
+from my_discord.client.main_application import MainApplication
 
 
 if __name__ == "__main__":
