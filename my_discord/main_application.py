@@ -1,22 +1,22 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import mysql.connector
-from my_discord.client.homepage import HomePage
-from my_discord.client.loginpage import LoginPage
-from my_discord.client.creationpage import CreateAccountPage
+from .client.homepage import HomePage
+from .client.loginpage import LoginPage
+from .client.creationpage import CreateAccountPage
 
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("green")
-
-db_connection = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Teddy2212!", # Modify this for your local setup
-    database="discord"
-)
 
 class MainApplication(ctk.CTk):
     def __init__(self):
+        ctk.set_appearance_mode("dark")
+        ctk.set_default_color_theme("green")
+
+        db_connection = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="CV&$i7mx$oZDrq", # Modify this for your local setup
+            database="discord"
+        )
         super().__init__()
         self.title('Battias')
         self.geometry('600x600')
@@ -36,7 +36,3 @@ class MainApplication(ctk.CTk):
     def show_frame(self, page_name):
         frame = self.frames[page_name]
         frame.tkraise()
-
-if __name__ == "__main__":
-    app = MainApplication()
-    app.mainloop()
