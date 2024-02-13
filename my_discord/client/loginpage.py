@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import messagebox
+import hashlib
 import mysql.connector
 
 class LoginPage(ctk.CTkFrame):
@@ -35,16 +36,23 @@ class LoginPage(ctk.CTkFrame):
         email = self.email_entry.get()
         password = self.password_entry.get()
 
-        # Query the database to check if the email and password match
+        # Hash the password using SHA-256
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+        # Query the database to check if the email and hashed password match
         cursor = self.db_connection.cursor()
         select_query = "SELECT * FROM account WHERE email = %s AND password = %s"
-        user_data = (email, password)
+        user_data = (email, hashed_password)
         cursor.execute(select_query, user_data)
         result = cursor.fetchone()
         cursor.close()
 
         if result:
             messagebox.showinfo("Login Successful", "You have been logged in.")
-            # Implement the transition to the next interface/application
+            # Close the login page
+            self.destroy()
+            # Open the mainGUI page
+            root = self.master
+            app = maingui.mainGUI(root)
         else:
             messagebox.showerror("Login Failed", "Invalid email or password.")
