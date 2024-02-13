@@ -14,12 +14,12 @@ class MainApplication(ctk.CTk):
         db_connection = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="CV&$i7mx$oZDrq", # Modify this for your local setup
-            database="discord"
+            password="CV&$i7mx$oZDrq",  # Modify this for your local setup
+            database="discord",
         )
         super().__init__()
-        self.title('Battias')
-        self.geometry('600x600')
+        self.title("Battias")
+        self.geometry("600x600")
 
         self.container = ctk.CTkFrame(self, width=400, height=500)
         self.container.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
@@ -27,7 +27,9 @@ class MainApplication(ctk.CTk):
         self.frames = {}
         for F in (HomePage, LoginPage, CreateAccountPage):
             page_name = F.__name__
-            frame = F(parent=self.container, controller=self, db_connection=db_connection)
+            frame = F(
+                parent=self.container, controller=self, db_connection=db_connection
+            )
             self.frames[page_name] = frame
             frame.place(relwidth=1, relheight=1)
 
