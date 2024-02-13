@@ -1,9 +1,9 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import mysql.connector
-from client.homepage import HomePage
-from client.loginpage import LoginPage
-from client.creationpage import CreateAccountPage
+from my_discord.client.homepage import HomePage
+from my_discord.client.loginpage import LoginPage
+from my_discord.client.creationpage import CreateAccountPage
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
