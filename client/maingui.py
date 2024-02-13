@@ -1,6 +1,6 @@
 from tkinter import Tk, Canvas, Entry, Text, Button
 
-class ChatUI:
+class mainGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Battias")
@@ -71,5 +71,5 @@ class ChatUI:
 
 if __name__ == "__main__":
     root = Tk()
-    app = ChatUI(root)
+    app = mainGUI(root)
     root.mainloop()
