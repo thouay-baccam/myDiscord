@@ -1,21 +1,25 @@
 from tkinter import messagebox
-
+from dotenv import load_dotenv
 import customtkinter as ctk
 import mysql.connector
-
+import os
 from .startup_page import StartupPage
 from .login_page import LoginPage
 from .create_account_page import CreateAccountPage
 from .main_gui import MainGUI
 
+
 ctk.set_appearance_mode("dark")
 
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv(dotenv_path="pass.env")
+
 db_connection = mysql.connector.connect(
-    host="SENSITIVE_DATA",
-    user="user",
-    password="discord",
-    port="SENSITIVE_DATA",
-    database="discord"
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    port=os.getenv("DB_PORT"),
+    database=os.getenv("DB_DATABASE")
 )
 
 class MainApplication(ctk.CTk):
