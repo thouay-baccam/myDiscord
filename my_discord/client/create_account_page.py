@@ -1,7 +1,9 @@
-import customtkinter as ctk
-from tkinter import messagebox
-import mysql.connector
 import hashlib
+from tkinter import messagebox
+
+import mysql.connector
+import customtkinter as ctk
+
 
 class CreateAccountPage(ctk.CTkFrame):
     def __init__(self, parent, controller, db_connection):
@@ -47,7 +49,7 @@ class CreateAccountPage(ctk.CTkFrame):
         self.create_account_button.pack(pady=20)
 
         # Back Button
-        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("HomePage"))
+        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("StartupPage"))
         self.back_button.pack()
 
     def is_valid_password(self, password):
@@ -73,25 +75,28 @@ class CreateAccountPage(ctk.CTkFrame):
         password = self.password_entry.get()
         verify_password = self.verify_password_entry.get()
 
-        if email and password and verify_password:
-            if password == verify_password:
-                if self.is_valid_password(password):
-                    # Combine name and lastname to create the username
-                    username = name + lastname
-                    password = self.hash_password(password)
-
-                    # Insert user data into the database
-                    cursor = self.db_connection.cursor()
-                    insert_query = "INSERT INTO account (username, name, lastname, email, password) VALUES (%s, %s, %s, %s, %s)"
-                    user_data = (username, name, lastname, email, password)
-                    cursor.execute(insert_query, user_data)
-                    self.db_connection.commit()
-                    cursor.close()
-
-                    messagebox.showinfo("Account Created", "Your account has been created successfully.")
-                else:
-                    messagebox.showerror("Invalid Password", "Password must have one uppercase, one lowercase, one number, and one special character.")
-            else:
-                messagebox.showerror("Password Mismatch", "Passwords do not match. Please re-enter.")
-        else:
+        if not (email and password and verify_password):
             messagebox.showerror("Creation Failed", "Please fill in all fields.")
+            return
+
+        if not password == verify_password:
+            messagebox.showerror("Password Mismatch", "Passwords do not match. Please re-enter.")
+            return
+
+        if not self.is_valid_password(password):
+            messagebox.showerror("Invalid Password", "Password must have one uppercase, one lowercase, one number, and one special character.")
+            return
+
+        # Combine name and lastname to create the username
+        username = name + lastname
+        password = self.hash_password(password)
+
+        # Insert user data into the database
+        cursor = self.db_connection.cursor()
+        insert_query = "INSERT INTO account (username, name, lastname, email, password) VALUES (%s, %s, %s, %s, %s)"
+        user_data = (username, name, lastname, email, password)
+        cursor.execute(insert_query, user_data)
+        self.db_connection.commit()
+        cursor.close()
+
+        messagebox.showinfo("Account Created", "Your account has been created successfully.")
