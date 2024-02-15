@@ -1,61 +1,131 @@
 import socket
 import threading
+import signal
+import sys
+import mysql.connector
+from mysql.connector import Error
+from mysql.connector.pooling import MySQLConnectionPool
+from datetime import datetime
 
-clients = []  # Liste pour stocker les connexions des clients
+# Adresse IP et port du serveur
+SERVER_IP = '0.0.0.0'  # Accepte toutes les adresses IP
+SERVER_PORT = 34567
 
-def handle_client(client_socket, address):
+# Création du socket
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Liaison du socket à l'adresse et au port
+server_socket.bind((SERVER_IP, SERVER_PORT))
+
+# Écoute pour les connexions entrantes
+server_socket.listen()
+
+print(f"Le serveur écoute sur {SERVER_IP}:{SERVER_PORT}")
+
+# Connexion à la base de données MySQL avec pool
+db_config = {
+    "host": '192.168.1.84',
+    "database": 'discord',
+    "user": '',
+    "password": ''
+}
+
+# Création d'un pool de connexions
+db_connection_pool = MySQLConnectionPool(pool_name="db_pool", pool_size=10, **db_config)
+
+# Liste pour stocker les clients connectés
+clients = []
+server_running = True  # Variable pour contrôler l'état du serveur
+
+# Fonction pour envoyer les anciens messages au nouveau client
+def send_old_messages(client_socket):
     try:
+        connection = db_connection_pool.get_connection()
+        cursor = connection.cursor()
+        query = "SELECT content, sender, timestamp FROM messages_svc3 ORDER BY timestamp ASC"
+        cursor.execute(query)
+        old_messages = cursor.fetchall()
+        cursor.close()
+        connection.close()
+
+        for old_message in old_messages:
+            content, sender, timestamp = old_message
+            message = f"{timestamp} - {sender}: {content}\n"
+            client_socket.send(message.encode('utf-8'))
+
+    except Error as e:
+        print(f"Erreur lors de la récupération des anciens messages: {e}")
+
+# Fonction pour gérer les messages entrants de chaque client
+def handle_client(client_socket, client_address):
+    try:
+        # Envoyer les anciens messages au nouveau client lors de la connexion
+        send_old_messages(client_socket)
+
         while True:
-            message = client_socket.recv(1024).decode()
-            if not message:
+            data = client_socket.recv(1024)
+            if not data:
                 break
-            broadcast(message, address)
+            message = f"{client_address[0]}:{client_address[1]} - {data.decode('utf-8')}"
+            print(message)
+
+            # Sauvegarder le message dans la base de données
+            save_message_to_database(data.decode('utf-8'), f"{client_address[0]}:{client_address[1]}")
+
+            # Diffuser le message à tous les clients
+            broadcast(message, client_socket)
+
     except Exception as e:
-        print(f"Error handling client {address}: {e}")
+        print(f"Erreur de connexion avec {client_address}: {str(e)}")
     finally:
-        remove_client(client_socket, address)
-
-def broadcast(message, sender_address):
-    for client_socket, client_address in clients:
-        if client_address != sender_address:
-            try:
-                client_socket.send(message.encode())
-            except Exception as e:
-                print(f"Error broadcasting message to {client_address}: {e}")
-
-def remove_client(client_socket, address):
-    try:
-        print(f"Client {address} disconnected")
-        clients.remove((client_socket, address))
+        clients.remove(client_socket)
         client_socket.close()
-        broadcast(f"User {address} left the chat", address)
-    except Exception as e:
-        print(f"Error removing client {address}: {e}")
 
-def start_server():
-    server_ip = "0.0.0.0"  # Accept connections from any IP
-    server_port = 34567
+# Fonction pour diffuser un message à tous les clients
+def broadcast(message, sender_socket):
+    for client in clients:
+        if client != sender_socket:
+            try:
+                client.send(message.encode('utf-8'))
+            except Exception as e:
+                print(f"Erreur d'envoi au client: {str(e)}")
 
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((server_ip, server_port))
-    server_socket.listen(5)
-
-    print(f"Server listening on {server_ip}:{server_port}")
-
+# Fonction pour sauvegarder le message dans la base de données
+def save_message_to_database(content, sender):
     try:
-        while True:
-            client_socket, client_address = server_socket.accept()
-            print(f"Accepted connection from {client_address}")
-            clients.append((client_socket, client_address))
-            broadcast(f"User {client_address} joined the chat", client_address)
+        connection = db_connection_pool.get_connection()
+        cursor = connection.cursor()
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        query = "INSERT INTO messages (content, sender, timestamp) VALUES (%s, %s, %s)"
+        cursor.execute(query, (content, sender, timestamp))
+        connection.commit()
+        cursor.close()
+        connection.close()
+    except Error as e:
+        print(f"Erreur lors de l'insertion du message dans la base de données: {e}")
 
-            # Create a new thread to handle the client
-            threading.Thread(target=handle_client, args=(client_socket, client_address), daemon=True).start()
-    except KeyboardInterrupt:
-        print("Server shutting down.")
-    finally:
-        server_socket.close()
+# Fonction pour arrêter proprement le serveur
+def stop_server(signum, frame):
+    global server_running
+    print("Arrêt du serveur...")
+    server_running = False
+    server_socket.close()
+    sys.exit(0)
 
-if __name__ == "__main__":
-    start_server()
+# Associer la fonction stop_server au signal SIGINT (Ctrl+C)
+signal.signal(signal.SIGINT, stop_server)
 
+# Boucle principale pour accepter les connexions des clients
+while server_running:
+    try:
+        client_socket, client_address = server_socket.accept()
+        clients.append(client_socket)
+        client_handler = threading.Thread(target=handle_client, args=(client_socket, client_address))
+        client_handler.start()
+
+    except Exception as e:
+        if server_running:
+            print(f"Erreur lors de l'acceptation de la connexion: {str(e)}")
+
+# Si la boucle principale se termine, cela signifie que le serveur a été arrêté
+print("Serveur arrêté.")
