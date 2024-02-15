@@ -1,6 +1,8 @@
 import socket
 import threading
 from datetime import datetime
+from clientconfig import CLIENT_CONFIG
+
 
 def receive_messages(client_socket):
     try:
@@ -26,8 +28,8 @@ def send_messages(client_socket):
         client_socket.close()
 
 def start_client():
-    server_ip = "SENSITIVE_DATA"  
-    server_port = 1212
+    server_ip = CLIENT_CONFIG["server_ip"]
+    server_port = CLIENT_CONFIG["server_port"]
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((server_ip, server_port))
