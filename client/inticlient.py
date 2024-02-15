@@ -1,37 +1,45 @@
-from threading import Thread
 import socket
+import threading
+from datetime import datetime
 
-def send(sock):
-    while True:
-        msg = input()
-        msg = msg.encode('utf-8')
-        sock.send(msg)
+def receive_messages(client_socket):
+    try:
+        while True:
+            message = client_socket.recv(1024).decode()
+            if not message:
+                break
+            print(message)
+    except Exception as e:
+        print(f"Error receiving message: {e}")
+    finally:
+        client_socket.close()
 
-def receive(sock):
-    while True:
-        try:
-            response = sock.recv(500)
-            response = response.decode("utf-8")
-            print(response)
-        except Exception as e:
-            print(f"Erreur de réception : {e}")
-            break
+def send_messages(client_socket):
+    try:
+        while True:
+            user_input = input()
+            formatted_message = f"[{datetime.now().strftime('%H:%M:%S')}] {user_input}"
+            client_socket.send(formatted_message.encode())
+    except Exception as e:
+        print(f"Error sending message: {e}")
+    finally:
+        client_socket.close()
 
-host = "SENSITIVE_DATA"
-port = 1212  # Port externe configuré sur le routeur
+def start_client():
+    server_ip = "not"  
+    server_port = not
 
-# Création du socket
-client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((host, port))
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((server_ip, server_port))
 
-send_thread = Thread(target=send, args=[client_socket])
-receive_thread = Thread(target=receive, args=[client_socket])
+    receive_thread = threading.Thread(target=receive_messages, args=(client_socket,), daemon=True)
+    send_thread = threading.Thread(target=send_messages, args=(client_socket,), daemon=True)
 
-send_thread.start()
-receive_thread.start()
+    receive_thread.start()
+    send_thread.start()
 
-# Attendez que les deux threads se terminent avant de fermer le socket
-send_thread.join()
-receive_thread.join()
+    receive_thread.join()
+    send_thread.join()
 
-client_socket.close()
+if __name__ == "__main__":
+    start_client()
