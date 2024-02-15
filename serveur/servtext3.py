@@ -6,10 +6,11 @@ import mysql.connector
 from mysql.connector import Error
 from mysql.connector.pooling import MySQLConnectionPool
 from datetime import datetime
+from pass3 import DB_CONFIG, SERVER_CONFIG
 
-# Adresse IP et port du serveur
-SERVER_IP = '0.0.0.0'  # Accepte toutes les adresses IP
-SERVER_PORT = 34567
+# Utilisez DB_CONFIG et SERVER_CONFIG au lieu des valeurs directes
+SERVER_IP = SERVER_CONFIG["ip"]
+SERVER_PORT = SERVER_CONFIG["port"]
 
 # Création du socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,15 +24,7 @@ server_socket.listen()
 print(f"Le serveur écoute sur {SERVER_IP}:{SERVER_PORT}")
 
 # Connexion à la base de données MySQL avec pool
-db_config = {
-    "host": '192.168.1.84',
-    "database": 'discord',
-    "user": '',
-    "password": ''
-}
-
-# Création d'un pool de connexions
-db_connection_pool = MySQLConnectionPool(pool_name="db_pool", pool_size=10, **db_config)
+db_connection_pool = MySQLConnectionPool(pool_name="db_pool", pool_size=10, **DB_CONFIG)
 
 # Liste pour stocker les clients connectés
 clients = []
