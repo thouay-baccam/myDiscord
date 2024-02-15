@@ -8,10 +8,9 @@ from .chat_backend import ChatBackend
 from .member_list import MemberList
 
 
-ctk.set_appearance_mode("dark")
-
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
     def __init__(self, parent, controller, db_connection):  # Add parent, controller, and db_connection as arguments
+        ctk.set_appearance_mode("dark")
         super().__init__(parent)
         self.controller = controller
         self.db_connection = db_connection
