@@ -1,6 +1,8 @@
-import customtkinter as ctk
 from tkinter import messagebox
+
+import customtkinter as ctk
 import mysql.connector
+
 from .startup_page import StartupPage
 from .login_page import LoginPage
 from .create_account_page import CreateAccountPage

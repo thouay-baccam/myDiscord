@@ -1,9 +1,12 @@
 # MainGUI.py
-import customtkinter as ctk
+import datetime
 import tkinter as tk
+
+import customtkinter as ctk
+
 from .chat_backend import ChatBackend
 from .member_list import MemberList
-import datetime
+
 
 ctk.set_appearance_mode("dark")
 
