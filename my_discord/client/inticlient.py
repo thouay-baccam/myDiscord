@@ -2,8 +2,8 @@ import socket
 import threading
 
 # Adresse IP et port du serveur
-SERVER_IP = "SENSITIVE_DATA"
-SERVER_PORT = 1212
+SERVER_IP = "not"
+SERVER_PORT = not
 
 # Création du socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
