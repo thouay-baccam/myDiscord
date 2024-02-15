@@ -7,7 +7,7 @@ class ChatBackend:
     def __init__(self, gui, username):
         # Socket connection
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(('SENSITIVE_DATA', 1212))
+        self.client_socket.connect(('SENSITIVE_DATA', 1213))
 
         # Reference to the GUI for updating the textbox
         self.gui = gui
