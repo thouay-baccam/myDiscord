@@ -6,7 +6,7 @@ import mysql.connector
 from mysql.connector import Error
 from mysql.connector.pooling import MySQLConnectionPool
 from datetime import datetime
-from serveur.p3 import DB_CONFIG, SERVER_CONFIG
+from serveur.pc import DB_CONFIG, SERVER_CONFIG
 
 # Utilisez DB_CONFIG et SERVER_CONFIG au lieu des valeurs directes
 SERVER_IP = SERVER_CONFIG["ip"]
