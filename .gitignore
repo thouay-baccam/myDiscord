@@ -1,4 +1,4 @@
-pass1.py
-pass2.py
-pass3.py
-clientconfig.py
+/server/pass1.py
+/server/pass2.py
+/server/pass3.py
+/client/clientconfig.py
