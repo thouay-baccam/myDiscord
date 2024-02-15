@@ -1,10 +1,10 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import mysql.connector
-from StartupPage import StartupPage
-from LoginPage import LoginPage
-from CreateAccountPage import CreateAccountPage
-from MainGUI import MainGUI
+from .StartupPage import StartupPage
+from .LoginPage import LoginPage
+from .CreateAccountPage import CreateAccountPage
+from .MainGUI import MainGUI
 
 ctk.set_appearance_mode("dark")
 
