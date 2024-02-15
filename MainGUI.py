@@ -1,5 +1,6 @@
 # MainGUI.py
 import customtkinter as ctk
+import tkinter as tk
 from ChatBackend import ChatBackend
 from MemberList import MemberList
 import datetime
@@ -58,7 +59,32 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Create a labelbox that will change dynamically (for usernames)
         self.dynamic_label = ctk.CTkLabel(self, text=controller.username, width=200)  # Set the text to the username
         self.dynamic_label.place(x=760, y=540)
-    
+
+        # Keep track of the currently highlighted label
+        self.highlighted_label = None
+
+    def on_member_click(self, event):
+        # Remove highlight from the previously clicked label
+        if self.highlighted_label:
+            self.highlighted_label.config(fg="white")  # Change color back to black
+
+        # Highlight the clicked member's name
+        clicked_label = event.widget
+        clicked_label.config(fg="green")  # You can customize the color
+        self.highlighted_label = clicked_label
+
+        # Create a context menu for assigning roles
+        menu = tk.Menu(self, tearoff=0)
+        menu.add_command(label="Assign roles", command=self.open_role_assignment_window)
+
+        # Show the context menu at the clicked position
+        menu.post(event.x_root, event.y_root)
+
+    def open_role_assignment_window(self):
+        # Implement your logic for role assignment window here
+        # You can create a new Toplevel window and add widgets for role assignment
+        pass
+
     def update_member_list(self):
         # Get all usernames
         usernames = self.member_list.get_usernames()
@@ -70,12 +96,13 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Add each username to the members_list
         for username in usernames:
             label = ctk.CTkLabel(self.members_list, text=username)
+            label.bind("<Button-1>", self.on_member_click)  # Bind click event
             label.pack()
 
 
     def disconnect(self):
         self.backend.client_socket.close()  # Close the socket connection
-        self.controller.show_frame("StartupPage")
+        self.controller.quit()  # Close the application
 
     def send_message(self, message=None):
         # Get the message from the entry if not provided
