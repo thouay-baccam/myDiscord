@@ -3,11 +3,12 @@ import customtkinter as ctk
 from ChatBackend import ChatBackend
 from MemberList import MemberList
 import datetime
+from channel_list import ChannelList
 
-ctk.set_appearance_mode("dark")
 
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
     def __init__(self, parent, controller, db_connection):  # Add parent, controller, and db_connection as arguments
+        ctk.set_appearance_mode("dark")
         super().__init__(parent)
         self.controller = controller
         self.db_connection = db_connection
@@ -47,6 +48,9 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.text_label = ctk.CTkLabel(self, text="Text Channels", width=200)
         self.text_label.place(x=30, y=270)
 
+        self.channel_list = ChannelList(db_connection)
+        self.update_channel_list()
+
         self.members_list = ctk.CTkScrollableFrame(self, width=200, height=470)
         self.members_list.place(x=750, y=50)
         self.members_label = ctk.CTkLabel(self, text="Members List", width=200)
@@ -58,7 +62,55 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Create a labelbox that will change dynamically (for usernames)
         self.dynamic_label = ctk.CTkLabel(self, text=controller.username, width=200)  # Set the text to the username
         self.dynamic_label.place(x=760, y=540)
-    
+
+        # Keep track of the currently highlighted label
+        self.highlighted_label = None
+
+    def on_member_click(self, event):
+        # Remove highlight from the previously clicked label
+        if self.highlighted_label:
+            self.highlighted_label.config(fg="white")  # Change color back to black
+
+        # Highlight the clicked member's name
+        clicked_label = event.widget
+        clicked_label.config(fg="green")  # You can customize the color
+        self.highlighted_label = clicked_label
+
+        # Create a context menu for assigning roles
+        menu = tk.Menu(self, tearoff=0)
+        menu.add_command(label="Assign roles", command=self.open_role_assignment_window)
+
+        # Show the context menu at the clicked position
+        menu.post(event.x_root, event.y_root)
+
+    def open_role_assignment_window(self):
+        # Implement your logic for role assignment window here
+        # You can create a new Toplevel window and add widgets for role assignment
+        pass
+
+    def connect_to_channel(self, port):
+        self.backend.connect(port)
+        
+    def select_channel(self, event, channel, port):
+        ...
+        # Bind the connect button to the selected channel
+        self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
+
+
+    def update_channel_list(self):
+        # Get all channels
+        channels = self.channel_list.get_channels()
+
+        # Clear the text_channels
+        for widget in self.text_channels.winfo_children():
+            widget.destroy()
+
+        # Add each channel to the text_channels
+        for channel, port in channels:
+            label = ctk.CTkLabel(self.text_channels, text=channel)
+            label.bind("<Button-1>", lambda event, channel=channel, port=port: self.select_channel(event, channel, port))
+            label.pack()
+
     def update_member_list(self):
         # Get all usernames
         usernames = self.member_list.get_usernames()
@@ -70,12 +122,13 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Add each username to the members_list
         for username in usernames:
             label = ctk.CTkLabel(self.members_list, text=username)
+            label.bind("<Button-1>", self.on_member_click)  # Bind click event
             label.pack()
 
 
     def disconnect(self):
         self.backend.client_socket.close()  # Close the socket connection
-        self.controller.show_frame("StartupPage")
+        self.controller.quit()  # Close the application
 
     def send_message(self, message=None):
         # Get the message from the entry if not provided
