@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 from tkinter import messagebox
 import customtkinter as ctk
 import mysql.connector
-from startup_page import StartupPage
-from login_page import LoginPage
-from create_account_page import CreateAccountPage
-from main_gui import MainGUI
+from .startup_page import StartupPage
+from .login_page import LoginPage
+from .create_account_page import CreateAccountPage
+from .main_gui import MainGUI
 
 ctk.set_appearance_mode("dark")
 

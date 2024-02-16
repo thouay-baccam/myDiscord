@@ -4,7 +4,7 @@ from tkinter import messagebox
 import mysql.connector
 import customtkinter as ctk
 
-from main_gui import MainGUI
+from .main_gui import MainGUI
 
 
 class LoginPage(ctk.CTkFrame):

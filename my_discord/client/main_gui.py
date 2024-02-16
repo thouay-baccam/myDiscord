@@ -4,9 +4,9 @@ import tkinter as tk
 
 import customtkinter as ctk
 
-from chat_backend import ChatBackend
-from member_list import MemberList
-from channel_list import ChannelList
+from .chat_backend import ChatBackend
+from .member_list import MemberList
+from .channel_list import ChannelList
 
 
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
