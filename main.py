@@ -5,15 +5,19 @@ from StartupPage import StartupPage
 from LoginPage import LoginPage
 from CreateAccountPage import CreateAccountPage
 from MainGUI import MainGUI
+import os
+from dotenv import load_dotenv
 
 ctk.set_appearance_mode("dark")
 
+load_dotenv(dotenv_path="pass.env")
+
 db_connection = mysql.connector.connect(
-    host="SENSITIVE_DATA",
-    user="",
-    password="",
-    port="SENSITIVE_DATA",
-    database="discord"
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    port=os.getenv("DB_PORT"),
+    database=os.getenv("DB_DATABASE")
 )
 
 class MainApplication(ctk.CTk):

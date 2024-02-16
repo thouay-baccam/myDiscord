@@ -2,12 +2,13 @@
 import socket
 import threading
 import datetime
+from config import IP_ADDRESS, PORT
 
 class ChatBackend:
     def __init__(self, gui, username):
         # Socket connection
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(('SENSITIVE_DATA', 1212))
+        self.client_socket.connect((IP_ADDRESS, PORT))
 
         # Reference to the GUI for updating the textbox
         self.gui = gui
