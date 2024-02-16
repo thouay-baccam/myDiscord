@@ -3,7 +3,7 @@ import customtkinter as ctk
 from ChatBackend import ChatBackend
 from MemberList import MemberList
 import datetime
-from channel_list import ChannelList
+from ChannelList import ChannelList
 
 
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
