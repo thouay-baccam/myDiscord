@@ -24,7 +24,7 @@ class Account:
         cursor = db_connection.cursor()
 
         # TEMPORAIREMENT ID
-        cursor.execute(f"SELECT role FROM account WHERE username={self.username}")
+        cursor.execute(f"SELECT role FROM account WHERE username='{self.username}'")
         role = cursor.fetchall()[0][0]
 
         cursor.close()
