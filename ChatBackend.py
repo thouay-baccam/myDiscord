@@ -2,7 +2,7 @@
 import socket
 import threading
 import datetime
-import config
+from config import IP_ADDRESS, PORT
 
 class ChatBackend:
     def __init__(self, gui, username):
