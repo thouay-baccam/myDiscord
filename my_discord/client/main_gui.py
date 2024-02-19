@@ -85,6 +85,9 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         clicked_label.config(fg="#00FF00")  # You can customize the color
         self.highlighted_label = clicked_label
 
+    def on_member_right_click(self, event):
+        self.on_member_click(event)
+
         selected_username = self.highlighted_label.cget("text")
 
         # Create a context menu for assigning roles
@@ -171,7 +174,8 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Add each username to the members_list
         for username in usernames:
             label = ctk.CTkLabel(self.members_list, text=username)
-            label.bind("<ButtonRelease-3>", self.on_member_click)  # Bind click event
+            label.bind("<ButtonRelease-1>", self.on_member_click)
+            label.bind("<ButtonRelease-3>", self.on_member_right_click)
             label.pack()
 
 
