@@ -1,32 +1,53 @@
 import socket
 import pyaudio
-from conf import IP_ADDRESS, PORT
+import wave
+from pynput import keyboard
 
-# Paramètres audio
-CHUNK = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100
+CHUNK = 1024
+RECORD_SECONDS = 5  # Durée de l'enregistrement
 
-# Initialisation du client socket
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((IP_ADDRESS, PORT))
+client_socket.connect(('SENSITIVE_DATA', 1012))
 
-# Initialisation de l'objet PyAudio
-audio_stream = pyaudio.PyAudio()
-stream = audio_stream.open(format=FORMAT, channels=CHANNELS, rate=RATE, output=True)
+audio = pyaudio.PyAudio()
 
-try:
+stream = audio.open(format=FORMAT, channels=CHANNELS,
+                    rate=RATE, input=True,
+                    frames_per_buffer=CHUNK)
+
+print("Appuyez sur la touche 'r' pour commencer l'enregistrement vocal.")
+
+frames = []
+recording = False
+
+def on_press(key):
+    global recording
+    if key == keyboard.Key.esc:
+        return False
+    elif key.char == 'r':
+        if not recording:
+            print("Enregistrement audio en cours...")
+            recording = True
+
+def on_release(key):
+    global recording
+    if key.char == 'r':
+        print("Enregistrement terminé.")
+        recording = False
+
+# Collecte les presses et les releases des touches 'r'
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     while True:
-        # Enregistrement audio depuis le microphone
-        audio_data = stream.read(CHUNK)
+        if recording:
+            data = stream.read(CHUNK)
+            frames.append(data)
 
-        # Envoyer les données audio au serveur
-        client_socket.sendall(audio_data)
-except KeyboardInterrupt:
-    print("Arrêt du client.")
-finally:
-    stream.stop_stream()
-    stream.close()
-    audio_stream.terminate()
-    client_socket.close()
+            # Si vous voulez arrêter l'enregistrement avec une autre touche, ajoutez une condition ici
+
+            # Traitement des données audio reçues (lecture ou sauvegarde dans un fichier, selon vos besoins)
+            data = client_socket.recv(1024)
+            if data:
+                stream.write(data)
