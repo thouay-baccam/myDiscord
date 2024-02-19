@@ -4,8 +4,9 @@ import tkinter as tk
 
 import customtkinter as ctk
 
-from .chat_backend import ChatBackend
-from .member_list import MemberList
+from chat_backend import ChatBackend
+from member_list import MemberList
+from channel_list import ChannelList
 
 
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
@@ -50,6 +51,9 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.text_label = ctk.CTkLabel(self, text="Text Channels", width=200)
         self.text_label.place(x=30, y=270)
 
+        self.channel_list = ChannelList(db_connection)
+        self.update_channel_list()
+
         self.members_list = ctk.CTkScrollableFrame(self, width=200, height=470)
         self.members_list.place(x=750, y=50)
         self.members_label = ctk.CTkLabel(self, text="Members List", width=200)
@@ -86,6 +90,32 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Implement your logic for role assignment window here
         # You can create a new Toplevel window and add widgets for role assignment
         pass
+
+    def connect_to_channel(self, port):
+        # Clear the chat box when connecting to a channel
+        self.textbox.delete(1.0, 'end')
+        # Call the backend connect method
+        self.backend.connect(port)
+
+    def select_channel(self, event, channel, port):
+        ...
+        # Bind the connect button to the selected channel
+        self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
+
+
+    def update_channel_list(self):
+        # Get all channels
+        channels = self.channel_list.get_channels()
+
+        # Clear the text_channels
+        for widget in self.text_channels.winfo_children():
+            widget.destroy()
+
+        # Add each channel to the text_channels
+        for channel, port in channels:
+            label = ctk.CTkLabel(self.text_channels, text=channel)
+            label.bind("<Button-1>", lambda event, channel=channel, port=port: self.select_channel(event, channel, port))
+            label.pack()
 
     def update_member_list(self):
         # Get all usernames
