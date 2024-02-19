@@ -171,7 +171,7 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Add each username to the members_list
         for username in usernames:
             label = ctk.CTkLabel(self.members_list, text=username)
-            label.bind("<Button-1>", self.on_member_click)  # Bind click event
+            label.bind("<ButtonRelease-3>", self.on_member_click)  # Bind click event
             label.pack()
 
 
