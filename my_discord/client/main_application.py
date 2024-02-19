@@ -1,33 +1,17 @@
 import os
 from dotenv import load_dotenv
 from tkinter import messagebox
-<<<<<<< HEAD
-from dotenv import load_dotenv
-import customtkinter as ctk
-import mysql.connector
-import os
-from .startup_page import StartupPage
-from .login_page import LoginPage
-from .create_account_page import CreateAccountPage
-from .main_gui import MainGUI
-=======
 import customtkinter as ctk
 import mysql.connector
 from startup_page import StartupPage
 from login_page import LoginPage
 from create_account_page import CreateAccountPage
 from main_gui import MainGUI
->>>>>>> 84533b5d3b0d65577e78534191c6b33c3f84d8bb
 
 
 ctk.set_appearance_mode("dark")
 
-<<<<<<< HEAD
-# Charger les variables d'environnement depuis le fichier .env
-load_dotenv(dotenv_path="pass.env")
-=======
 load_dotenv(dotenv_path="p.env")
->>>>>>> 84533b5d3b0d65577e78534191c6b33c3f84d8bb
 
 db_connection = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
