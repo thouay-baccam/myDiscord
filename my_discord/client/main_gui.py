@@ -1,9 +1,12 @@
 # MainGUI.py
-import customtkinter as ctk
-from ChatBackend import ChatBackend
-from MemberList import MemberList
 import datetime
-from ChannelList import ChannelList
+import tkinter as tk
+
+import customtkinter as ctk
+
+from chat_backend import ChatBackend
+from member_list import MemberList
+from channel_list import ChannelList
 
 
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
@@ -89,8 +92,11 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         pass
 
     def connect_to_channel(self, port):
+        # Clear the chat box when connecting to a channel
+        self.textbox.delete(1.0, 'end')
+        # Call the backend connect method
         self.backend.connect(port)
-        
+
     def select_channel(self, event, channel, port):
         ...
         # Bind the connect button to the selected channel

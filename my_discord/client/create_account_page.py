@@ -1,7 +1,9 @@
-import customtkinter as ctk
-from tkinter import messagebox
-import mysql.connector
 import hashlib
+from tkinter import messagebox
+
+import mysql.connector
+import customtkinter as ctk
+
 
 class CreateAccountPage(ctk.CTkFrame):
     def __init__(self, parent, controller, db_connection):

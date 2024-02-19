@@ -1,8 +1,11 @@
-import customtkinter as ctk
-from tkinter import messagebox
-import mysql.connector
 import hashlib
-import MainGUI
+from tkinter import messagebox
+
+import mysql.connector
+import customtkinter as ctk
+
+from main_gui import MainGUI
+
 
 class LoginPage(ctk.CTkFrame):
     def __init__(self, parent, controller, db_connection):

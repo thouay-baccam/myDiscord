@@ -1,16 +1,17 @@
-import customtkinter as ctk
-from tkinter import messagebox
-import mysql.connector
-from StartupPage import StartupPage
-from LoginPage import LoginPage
-from CreateAccountPage import CreateAccountPage
-from MainGUI import MainGUI
 import os
 from dotenv import load_dotenv
+from tkinter import messagebox
+import customtkinter as ctk
+import mysql.connector
+from startup_page import StartupPage
+from login_page import LoginPage
+from create_account_page import CreateAccountPage
+from main_gui import MainGUI
+
 
 ctk.set_appearance_mode("dark")
 
-load_dotenv(dotenv_path="pass.env")
+load_dotenv(dotenv_path="p.env")
 
 db_connection = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
