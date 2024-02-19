@@ -4,9 +4,10 @@ import tkinter as tk
 
 import customtkinter as ctk
 
-from chat_backend import ChatBackend
-from member_list import MemberList
-from channel_list import ChannelList
+from .chat_backend import ChatBackend
+from .member_list import MemberList
+from .channel_list import ChannelList
+from .role import Role
 
 
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
@@ -71,12 +72,16 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
     def on_member_click(self, event):
         # Remove highlight from the previously clicked label
+        user_role = Role(self.controller.username).get_role()
+        if user_role != "admin":
+            return
+
         if self.highlighted_label:
             self.highlighted_label.config(fg="white")  # Change color back to black
 
         # Highlight the clicked member's name
         clicked_label = event.widget
-        clicked_label.config(fg="green")  # You can customize the color
+        clicked_label.config(fg="#00FF00")  # You can customize the color
         self.highlighted_label = clicked_label
 
         # Create a context menu for assigning roles
@@ -89,7 +94,20 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
     def open_role_assignment_window(self):
         # Implement your logic for role assignment window here
         # You can create a new Toplevel window and add widgets for role assignment
-        pass
+        role_assignement_window = ctk.CTkToplevel(self)
+
+        role_names = ["Utilisateur", "VIP", "Admin"]
+        selected_role = ctk.StringVar()
+
+        for name in role_names:
+            role_button = ctk.CTkRadioButton(
+                role_assignement_window,
+                text=name,
+                variable=selected_role
+            )
+            role_button.pack()
+
+        role_assignement_window.grab_set()
 
     def connect_to_channel(self, port):
         # Clear the chat box when connecting to a channel

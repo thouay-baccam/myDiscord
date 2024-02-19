@@ -3,12 +3,12 @@ from dotenv import load_dotenv
 
 import mysql.connector
 
-class Account:
+class Role:
     def __init__(self, username):
         self.username = username
 
-    def connect(self): ## REPETITION, A FIX!!
-        load_dotenv(dotenv_path="pass.env")
+    def connect(self):
+        load_dotenv(dotenv_path="p.env")
 
         db_connection = mysql.connector.connect(
             host=os.getenv("DB_HOST"),
@@ -23,7 +23,6 @@ class Account:
         db_connection = self.connect()
         cursor = db_connection.cursor()
 
-        # TEMPORAIREMENT ID
         cursor.execute(f"SELECT role FROM account WHERE username='{self.username}'")
         role = cursor.fetchall()[0][0]
 
@@ -31,3 +30,8 @@ class Account:
         db_connection.close()
         
         return role
+
+
+if __name__ == "__main__":
+    role = Role("TeddyBaccam")
+    print(role.get_role())
