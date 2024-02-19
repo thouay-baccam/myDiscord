@@ -31,6 +31,17 @@ class Role:
         
         return role
 
+    def set_role(self, role):
+        db_connection = self.connect()
+        cursor = db_connection.cursor()
+
+        cursor.execute(f"UPDATE account SET role = '{role}' WHERE username = '{self.username}'")
+        db_connection.commit()
+
+        cursor.close()
+        db_connection.close()
+        
+
 
 if __name__ == "__main__":
     role = Role("TeddyBaccam")

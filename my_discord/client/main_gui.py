@@ -1,6 +1,7 @@
 # MainGUI.py
 import datetime
 import tkinter as tk
+from functools import partial
 
 import customtkinter as ctk
 
@@ -84,28 +85,52 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         clicked_label.config(fg="#00FF00")  # You can customize the color
         self.highlighted_label = clicked_label
 
+        selected_username = self.highlighted_label.cget("text")
+
         # Create a context menu for assigning roles
         menu = tk.Menu(self, tearoff=0)
-        menu.add_command(label="Assign roles", command=self.open_role_assignment_window)
+        menu.add_command(
+            label="Assign roles",
+            command=partial(self.open_role_assignment_window, selected_username)
+        )
 
         # Show the context menu at the clicked position
         menu.post(event.x_root, event.y_root)
 
-    def open_role_assignment_window(self):
+    def open_role_assignment_window(self, selected_username):
         # Implement your logic for role assignment window here
         # You can create a new Toplevel window and add widgets for role assignment
         role_assignement_window = ctk.CTkToplevel(self)
 
-        role_names = ["Utilisateur", "VIP", "Admin"]
-        selected_role = ctk.StringVar()
+        role_assign_frame = ctk.CTkFrame(role_assignement_window, border_width = 0)
+        role_assign_frame.pack(padx=20, pady=20)
 
-        for name in role_names:
+        role_names = {
+            "Utilisateur": "user",
+            "VIP": "vip",
+            "Admin": "admin",
+        }
+        selected_role = ctk.StringVar()
+        for name, role in role_names.items():
             role_button = ctk.CTkRadioButton(
-                role_assignement_window,
+                role_assign_frame,
                 text=name,
-                variable=selected_role
+                value=role,
+                variable=selected_role,
             )
-            role_button.pack()
+            role_button.pack(padx=10, pady=10)
+
+        def confirm_on_click(selected_username):
+            role = selected_role.get()
+            Role(selected_username).set_role(role)
+            role_assignement_window.destroy()
+
+        confirm_button = ctk.CTkButton(
+            role_assign_frame,
+            text="Confirmer",
+            command=partial(confirm_on_click, selected_username)
+        )
+        confirm_button.pack(padx=10, pady=10)
 
         role_assignement_window.grab_set()
 
