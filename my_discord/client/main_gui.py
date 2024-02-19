@@ -138,20 +138,23 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         role_assignement_window.grab_set()
 
     def connect_to_channel(self, port):
+        channels = self.channel_list.get_channel_ports_and_roles()
+        current_role = Role(self.controller.username).get_role()
+        if not current_role in channels[port]:
+            return
+
         # Clear the chat box when connecting to a channel
         self.textbox.delete(1.0, 'end')
         # Call the backend connect method
         self.backend.connect(port)
 
     def select_channel(self, event, channel, port):
-        ...
-        # Bind the connect button to the selected channel
         self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
 
 
     def update_channel_list(self):
         # Get all channels
-        channels = self.channel_list.get_channels()
+        channels = self.channel_list.get_channel_names_and_ports()
 
         # Clear the text_channels
         for widget in self.text_channels.winfo_children():
