@@ -31,7 +31,6 @@ class ChatBackend:
         self.receive_thread = threading.Thread(target=self.receive_messages)
         self.receive_thread.start()
 
-
     def send_message(self, message):
         # Add the username, current time, and message
         message_with_username_and_time = f"{self.username} [{datetime.datetime.now().strftime('%H:%M:%S')}] : \n{message}"
@@ -39,15 +38,18 @@ class ChatBackend:
         # Insert the sent message into the textbox
         self.gui.textbox.insert('end', message_with_username_and_time + '\n')
 
+    def process_received_data(self, data):
+        date_regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
+        processed_data = re.split(date_regex, data.decode('utf-8'))
+        return processed_data
+
     def receive_messages(self):
         while True:
             try:
                 data = self.client_socket.recv(1024)
                 if not data:
                     break
-                date_regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
-                processed_data = re.split(date_regex, data.decode('utf-8'))
-                for message in processed_data:
+                for message in self.process_received_data(data):
                     self.gui.textbox.insert('end', message)
             except Exception as e:
                 print(f"Erreur de réception: {str(e)}")
