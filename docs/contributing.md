@@ -9,13 +9,18 @@
     * https://dev.to/varbsan/a-simplified-convention-for-naming-branches-and-commits-in-git-il4
     * https://www.conventionalcommits.org/fr/v1.0.0/
 
+
+## Qu'est-ce qu'une branche, qu'est-ce qu'un commit?
+* Une branche est un objectif
+* Un commit est UNE étape vers cet objectif
+
 ## Conventions branches
 
 ### Branches permanentes
 * main:
-    * On merge sur main que si on est sûr à 100% que c'est 100% stable et fini
+    * La branche main doit être stable pour les utilisateurs 
 * dev:
-    * On merge sur ça avant d'aller sur main
+    * La branche dev doit être stable pour les développeurs
 
 ### Noms de Branches temporaires
 * categorie/description-en-francais
@@ -41,8 +46,3 @@
     * feat: voice-chat entre deux users
     * refactor(connect): simplifié vérification
     * style(sign-up): conditions plus cleans
-
-## Conclusion
-* Une branche est comme un objectif
-* Un commit est une étape vers cette objectif
-* Un commit doit être le plus petit possible tant que ça soit raisonnable
