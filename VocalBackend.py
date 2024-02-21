@@ -37,20 +37,6 @@ def on_release(key):
     if key.char == 'r':
         print("Enregistrement terminé.")
         recording = False
-        # Enregistrez les données audio dans un fichier
-        filename = 'recorded_audio.wav'
-        wf = wave.open(filename, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(audio.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-        wf.close()
-
-        # Envoyez les données audio au serveur
-        client_socket.sendall(b'new_audio_message')
-        with open(filename, 'rb') as f:
-            audio_data = f.read()
-            client_socket.sendall(audio_data)
 
 # Collecte les presses et les releases des touches 'r'
 with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
@@ -59,7 +45,7 @@ with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
             data = stream.read(CHUNK)
             frames.append(data)
 
-        # Recevoir des données du serveur et les jouer
-        data = client_socket.recv(1024)
-        if data:
-            stream.write(data)
+            # Si vous voulez arrêter l'enregistrement avec une autre touche, ajoutez une condition ici
+
+            # Envoyez les données audio au serveur
+            client_socket.sendall(data)
