@@ -1,4 +1,5 @@
 # ChatBackend.py
+import re
 import socket
 import threading
 import datetime
@@ -44,7 +45,10 @@ class ChatBackend:
                 data = self.client_socket.recv(1024)
                 if not data:
                     break
-                self.gui.textbox.insert('end', data.decode('utf-8') + '\n')
+                regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
+                processed_data = re.split(regex, data.decode('utf-8'))
+                for message in processed_data:
+                    self.gui.textbox.insert('end', message)
             except Exception as e:
                 print(f"Erreur de réception: {str(e)}")
                 break
