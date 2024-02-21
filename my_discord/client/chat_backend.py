@@ -45,8 +45,8 @@ class ChatBackend:
                 data = self.client_socket.recv(1024)
                 if not data:
                     break
-                data_regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
-                processed_data = re.split(data_regex, data.decode('utf-8'))
+                date_regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
+                processed_data = re.split(date_regex, data.decode('utf-8'))
                 for message in processed_data:
                     self.gui.textbox.insert('end', message)
             except Exception as e:
