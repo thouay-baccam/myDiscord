@@ -194,7 +194,7 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
     def chatbox_insert(self, message_text):
         message_frame = ctk.CTkFrame(self.chatbox_frame)
-        message_frame.pack(anchor="w")
+        message_frame.pack(anchor="w", padx=10, pady=10)
 
         message = ctk.CTkLabel(message_frame, text=message_text, justify="left")
-        message.pack(side="left")
+        message.pack(side="left", padx=5, pady=5)
