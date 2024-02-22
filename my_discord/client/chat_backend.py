@@ -35,14 +35,14 @@ class ChatBackend:
         # Add the username, current time, and message
         message_with_username_and_time = f"{self.username} [{datetime.datetime.now().strftime('%H:%M:%S')}] : \n{message}"
         self.client_socket.send(message_with_username_and_time.encode('utf-8'))
-        # Insert the sent message into the textbox
-        self.gui.textbox.insert('end', message_with_username_and_time + '\n')
+        self.gui.chatbox_insert(message_with_username_and_time)
 
     def process_received_data(self, data):
         date_regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
         processed_data = re.split(date_regex, data.decode('utf-8'))
         return processed_data
 
+    # Find a way to reduce indentation
     def receive_messages(self):
         while True:
             try:
@@ -50,7 +50,9 @@ class ChatBackend:
                 if not data:
                     break
                 for message in self.process_received_data(data):
-                    self.gui.textbox.insert('end', message)
+                    if len(message) == 0:
+                        continue
+                    self.gui.chatbox_insert(message)
             except Exception as e:
                 print(f"Erreur de réception: {str(e)}")
                 break

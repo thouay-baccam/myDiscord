@@ -21,10 +21,9 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.controller.bind('<Return>', lambda event: self.send_message())
         self.controller.configure(bg='black')
 
-        
-        # Create a textbox widget
-        self.textbox = ctk.CTkTextbox(self, width=470, height=440)
-        self.textbox.place(x=265, y=50)
+        # Create a scrollable frame for the chatbox
+        self.chatbox_frame = ctk.CTkScrollableFrame(self, width=450, height=420)
+        self.chatbox_frame.place(x=265, y=50)
 
         # Create an entry widget
         self.entry = ctk.CTkEntry(self, width=400)
@@ -144,13 +143,13 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
             return
 
         # Clear the chat box when connecting to a channel
-        self.textbox.delete(1.0, 'end')
+        for message in self.chatbox_frame.winfo_children():
+            message.destroy()
         # Call the backend connect method
         self.backend.connect(port)
 
     def select_channel(self, event, channel, port):
         self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
-
 
     def update_channel_list(self):
         # Get all channels
@@ -181,7 +180,6 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
             label.bind("<ButtonRelease-3>", self.on_member_right_click)
             label.pack()
 
-
     def disconnect(self):
         self.backend.client_socket.close()  # Close the socket connection
         self.controller.quit()  # Close the application
@@ -193,3 +191,10 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.backend.send_message(message)
         # Clear the entry after sending the message
         self.entry.delete(0, 'end')
+
+    def chatbox_insert(self, message_text):
+        message_frame = ctk.CTkFrame(self.chatbox_frame)
+        message_frame.pack(anchor="w")
+
+        message = ctk.CTkLabel(message_frame, text=message_text, justify="left")
+        message.pack(side="left")
