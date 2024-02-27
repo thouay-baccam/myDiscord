@@ -40,6 +40,24 @@ class ChatBackend:
     def process_received_data(self, data):
         date_regex = r"(?:(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9]|3[01]))"
         processed_data = re.split(date_regex, data.decode('utf-8'))
+
+        hour_regex = r"(?:(?:0[0-9]|1[0-9]|2[0-3]):(?:[0-5][0-9]):(?:[0-5][0-9]))"
+        start_match = re.match(hour_regex, processed_data[0])
+
+        if not start_match and len(processed_data[0]) != 0:
+            message_labels = self.gui.chatbox_frame.winfo_children()
+            last_message_label = message_labels[-1].winfo_children()[0]
+
+            current_text = last_message_label.cget("text")
+            new_text = current_text + processed_data[0]
+
+            last_message_label.configure(text = new_text)
+
+            processed_data.pop(0)
+
+        elif len(processed_data[0]) == 0:
+            processed_data.pop(0)
+
         return processed_data
 
     # Find a way to reduce indentation
