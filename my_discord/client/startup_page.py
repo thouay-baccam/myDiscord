@@ -1,3 +1,5 @@
+# startup_page.py
+
 import customtkinter as ctk
 
 class StartupPage(ctk.CTkFrame):
