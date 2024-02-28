@@ -1,4 +1,5 @@
-# MainGUI.py
+# main_gui.py
+
 import datetime
 import tkinter as tk
 from functools import partial
@@ -73,7 +74,10 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
     def on_member_click(self, event):
         # Remove highlight from the previously clicked label
-        user_role = Role(self.controller.username).get_role()
+        user_role = Role(
+            self.db_connection,
+            self.controller.username,
+        ).get_role()
         if user_role != "admin":
             return
 
@@ -125,7 +129,10 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
         def confirm_on_click(selected_username):
             role = selected_role.get()
-            Role(selected_username).set_role(role)
+            Role(
+                self.db_connection,
+                selected_username
+            ).set_role(role)
             role_assignement_window.destroy()
 
         confirm_button = ctk.CTkButton(
@@ -139,7 +146,10 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
     def connect_to_channel(self, port):
         channels = self.channel_list.get_channel_ports_and_roles()
-        current_role = Role(self.controller.username).get_role()
+        current_role = Role(
+            self.db_connection,
+            self.controller.username,
+        ).get_role()
         if not current_role in channels[port]:
             return
 
@@ -150,7 +160,6 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
     def select_channel(self, event, channel, port):
         self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
-
 
     def update_channel_list(self):
         # Get all channels
