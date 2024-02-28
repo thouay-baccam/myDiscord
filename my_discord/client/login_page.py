@@ -16,7 +16,8 @@ class LoginPage(ctk.CTkFrame):
     def __init__(self, parent, controller, db_connection):
         super().__init__(parent)
         self.controller = controller
-        self.db_connection = db_connection  # Pass the database connection
+        # Pass the database connection
+        self.db_connection = db_connection
 
         # Title
         ctk.CTkLabel(self, text="Login", font=("Arial", 24)).pack(pady=20)
@@ -58,7 +59,8 @@ class LoginPage(ctk.CTkFrame):
 
         if result:
             messagebox.showinfo("Login Successful", "You have been logged in.")
-            self.controller.username = result[1]  # Store the username in the MainApplication class
+            # Store the username in the MainApplication class
+            self.controller.username = result[1]
             # Show the MainGUI frame
             self.controller.show_frame("MainGUI")
         else:
