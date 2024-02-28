@@ -89,7 +89,12 @@ class CreateAccountPage(ctk.CTkFrame):
             return
 
         if not self.is_valid_password(password):
-            messagebox.showerror("Invalid Password", "Password must have one uppercase, one lowercase, one number, and one special character.")
+            messagebox.showerror(
+                "Invalid Password",
+                "Password must have one uppercase, "
+                "one lowercase, one number, "
+                "and one special character."
+            )
             return
 
         # Combine name and lastname to create the username
