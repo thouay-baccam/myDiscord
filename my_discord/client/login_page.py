@@ -1,9 +1,14 @@
+# login_page.py
+
+# Standard library
 import hashlib
 from tkinter import messagebox
 
+# Third-party libraries
 import mysql.connector
 import customtkinter as ctk
 
+# Local modules
 from .main_gui import MainGUI
 
 
