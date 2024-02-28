@@ -1,15 +1,14 @@
 # login_page.py
 
 # Standard library
-import hashlib
 from tkinter import messagebox
 
 # Third-party libraries
-import mysql.connector
 import customtkinter as ctk
 
 # Local modules
 from .main_gui import MainGUI
+from .login_backend import hash_password, check_login
 
 
 class LoginPage(ctk.CTkFrame):
@@ -66,19 +65,12 @@ class LoginPage(ctk.CTkFrame):
         email = self.email_entry.get()
         password = self.password_entry.get()
 
-        # Hash the password
-        hashed_password = hashlib.sha256(password.encode()).hexdigest()
-
-        # Query the database to check if the email and hashed password match
-        cursor = self.db_connection.cursor()
-        select_query = (
-            "SELECT * FROM account "
-            "WHERE email = %s ""AND password = %s"
+        hashed_password = hash_password(password)
+        result = check_login(
+            self.db_connection,
+            email,
+            hashed_password
         )
-        user_data = (email, hashed_password)
-        cursor.execute(select_query, user_data)
-        result = cursor.fetchone()
-        cursor.close()
 
         if result:
             messagebox.showinfo(
