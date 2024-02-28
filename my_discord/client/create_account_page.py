@@ -17,53 +17,83 @@ class CreateAccountPage(ctk.CTkFrame):
         self.db_connection = db_connection
 
         # Title
-        ctk.CTkLabel(self, text="Create Account", font=("Arial", 24)).pack(pady=20)
+        ctk.CTkLabel(
+            self,
+            text="Create Account",
+            font=("Arial", 24)
+        ).pack(pady=20)
 
         # Name Entry
         self.name_label = ctk.CTkLabel(self, text="Name")
         self.name_label.pack(pady=(10, 0))
-        self.name_entry = ctk.CTkEntry(self, width=200, placeholder_text="Name")
+        self.name_entry = ctk.CTkEntry(
+            self,
+            width=200,
+            placeholder_text="Name"
+        )
         self.name_entry.pack()
 
         # Last Name Entry
-        self.lastname_label = ctk.CTkLabel(self, text="Last Name")
+        self.lastname_label = ctk.CTkLabel(
+            self,
+            text="Last Name"
+        )
         self.lastname_label.pack(pady=(10, 0))
         self.lastname_entry = ctk.CTkEntry(
-            self, width=200, placeholder_text="Last Name"
+            self,
+            width=200,
+            placeholder_text="Last Name"
         )
         self.lastname_entry.pack()
 
         # Email Entry
         self.email_label = ctk.CTkLabel(self, text="Email")
         self.email_label.pack(pady=(10, 0))
-        self.email_entry = ctk.CTkEntry(self, width=200, placeholder_text="Email")
+        self.email_entry = ctk.CTkEntry(
+            self,
+            width=200,
+            placeholder_text="Email"
+        )
         self.email_entry.pack()
 
         # Password Entry
         self.password_label = ctk.CTkLabel(self, text="Password")
         self.password_label.pack(pady=(10, 0))
         self.password_entry = ctk.CTkEntry(
-            self, width=200, placeholder_text="Password", show="*"
+            self,
+            width=200,
+            placeholder_text="Password",
+            show="*"
         )
         self.password_entry.pack()
 
         # Verify Password Entry
-        self.verify_password_label = ctk.CTkLabel(self, text="Verify Password")
+        self.verify_password_label = ctk.CTkLabel(
+            self,
+            text="Verify Password"
+        )
         self.verify_password_label.pack(pady=(10, 0))
         self.verify_password_entry = ctk.CTkEntry(
-            self, width=200, placeholder_text="Verify Password", show="*"
+            self,
+            width=200,
+            placeholder_text="Verify Password",
+            show="*"
         )
         self.verify_password_entry.pack()
 
         # Create Account Button
         self.create_account_button = ctk.CTkButton(
-            self, text="Create Account", command=self.attempt_create_account
+            self,
+            text="Create Account",
+            command=self.attempt_create_account
         )
         self.create_account_button.pack(pady=20)
 
         # Back Button
         self.back_button = ctk.CTkButton(
-            self, text="Back", command=lambda: controller.show_frame("StartupPage")
+            self,
+            text="Back",
+            command=lambda: controller.show_frame("StartupPage")
         )
         self.back_button.pack()
 
@@ -91,7 +121,10 @@ class CreateAccountPage(ctk.CTkFrame):
         verify_password = self.verify_password_entry.get()
 
         if not (email and password and verify_password):
-            messagebox.showerror("Creation Failed", "Please fill in all fields.")
+            messagebox.showerror(
+                "Creation Failed",
+                "Please fill in all fields."
+            )
             return
 
         if not password == verify_password:
@@ -117,7 +150,8 @@ class CreateAccountPage(ctk.CTkFrame):
         # Insert user data into the database
         cursor = self.db_connection.cursor()
         insert_query = (
-            "INSERT INTO account (username, name, lastname, email, password) "
+            "INSERT INTO account "
+            "(username, name, lastname, email, password) "
             "VALUES (%s, %s, %s, %s, %s)"
         )
         user_data = (username, name, lastname, email, password)
