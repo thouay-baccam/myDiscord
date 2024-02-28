@@ -1,6 +1,10 @@
+# create_account_page.py
+
+# Standard library
 import hashlib
 from tkinter import messagebox
 
+# Third-party libraries
 import mysql.connector
 import customtkinter as ctk
 
@@ -9,7 +13,8 @@ class CreateAccountPage(ctk.CTkFrame):
     def __init__(self, parent, controller, db_connection):
         super().__init__(parent)
         self.controller = controller
-        self.db_connection = db_connection  # Pass the database connection
+        # Pass the database connection
+        self.db_connection = db_connection
 
         # Title
         ctk.CTkLabel(self, text="Create Account", font=("Arial", 24)).pack(pady=20)
