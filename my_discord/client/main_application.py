@@ -1,8 +1,13 @@
+# Standard library
 import os
-from dotenv import load_dotenv
 from tkinter import messagebox
-import customtkinter as ctk
+
+# Third party libraries
 import mysql.connector
+import customtkinter as ctk
+from dotenv import load_dotenv
+
+# Local modules
 from .startup_page import StartupPage
 from .login_page import LoginPage
 from .create_account_page import CreateAccountPage
