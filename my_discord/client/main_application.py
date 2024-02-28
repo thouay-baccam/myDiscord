@@ -16,8 +16,6 @@ from .create_account_page import CreateAccountPage
 from .main_gui import MainGUI
 
 
-ctk.set_appearance_mode("dark")
-
 load_dotenv(dotenv_path="p.env")
 
 db_connection = mysql.connector.connect(
