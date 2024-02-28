@@ -28,6 +28,7 @@ db_connection = mysql.connector.connect(
     database=os.getenv("DB_DATABASE")
 )
 
+
 class MainApplication(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -61,7 +62,3 @@ class MainApplication(ctk.CTk):
         else:
             self.geometry('600x600') 
             self.container.configure(width=400, height=500) 
-
-if __name__ == "__main__":
-    app = MainApplication()
-    app.mainloop()
