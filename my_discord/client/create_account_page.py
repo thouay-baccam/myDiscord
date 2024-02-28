@@ -28,7 +28,9 @@ class CreateAccountPage(ctk.CTkFrame):
         # Last Name Entry
         self.lastname_label = ctk.CTkLabel(self, text="Last Name")
         self.lastname_label.pack(pady=(10, 0))
-        self.lastname_entry = ctk.CTkEntry(self, width=200, placeholder_text="Last Name")
+        self.lastname_entry = ctk.CTkEntry(
+            self, width=200, placeholder_text="Last Name"
+        )
         self.lastname_entry.pack()
 
         # Email Entry
@@ -40,21 +42,29 @@ class CreateAccountPage(ctk.CTkFrame):
         # Password Entry
         self.password_label = ctk.CTkLabel(self, text="Password")
         self.password_label.pack(pady=(10, 0))
-        self.password_entry = ctk.CTkEntry(self, width=200, placeholder_text="Password", show="*")
+        self.password_entry = ctk.CTkEntry(
+            self, width=200, placeholder_text="Password", show="*"
+        )
         self.password_entry.pack()
 
         # Verify Password Entry
         self.verify_password_label = ctk.CTkLabel(self, text="Verify Password")
         self.verify_password_label.pack(pady=(10, 0))
-        self.verify_password_entry = ctk.CTkEntry(self, width=200, placeholder_text="Verify Password", show="*")
+        self.verify_password_entry = ctk.CTkEntry(
+            self, width=200, placeholder_text="Verify Password", show="*"
+        )
         self.verify_password_entry.pack()
 
         # Create Account Button
-        self.create_account_button = ctk.CTkButton(self, text="Create Account", command=self.attempt_create_account)
+        self.create_account_button = ctk.CTkButton(
+            self, text="Create Account", command=self.attempt_create_account
+        )
         self.create_account_button.pack(pady=20)
 
         # Back Button
-        self.back_button = ctk.CTkButton(self, text="Back", command=lambda: controller.show_frame("StartupPage"))
+        self.back_button = ctk.CTkButton(
+            self, text="Back", command=lambda: controller.show_frame("StartupPage")
+        )
         self.back_button.pack()
 
     def is_valid_password(self, password):
@@ -85,7 +95,9 @@ class CreateAccountPage(ctk.CTkFrame):
             return
 
         if not password == verify_password:
-            messagebox.showerror("Password Mismatch", "Passwords do not match. Please re-enter.")
+            messagebox.showerror(
+                "Password Mismatch", "Passwords do not match. Please re-enter."
+            )
             return
 
         if not self.is_valid_password(password):
@@ -93,7 +105,7 @@ class CreateAccountPage(ctk.CTkFrame):
                 "Invalid Password",
                 "Password must have one uppercase, "
                 "one lowercase, one number, "
-                "and one special character."
+                "and one special character.",
             )
             return
 
@@ -109,4 +121,6 @@ class CreateAccountPage(ctk.CTkFrame):
         self.db_connection.commit()
         cursor.close()
 
-        messagebox.showinfo("Account Created", "Your account has been created successfully.")
+        messagebox.showinfo(
+            "Account Created", "Your account has been created successfully."
+        )
