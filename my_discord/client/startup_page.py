@@ -14,6 +14,7 @@ class StartupPage(ctk.CTkFrame):
             text="Welcome to Battias",
             font=("Arial", 24)
         ).pack(pady=(20, 5))
+
         ctk.CTkLabel(
             self,
             text="We're totally better than Discord",
