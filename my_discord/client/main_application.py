@@ -1,30 +1,17 @@
 # main_application.py
 
 # Standard library
-import os
 from tkinter import messagebox
 
 # Third party libraries
-import mysql.connector
 import customtkinter as ctk
-from dotenv import load_dotenv
 
 # Local modules
+from .database_connection import db_connection
 from .startup_page import StartupPage
 from .login_page import LoginPage
 from .create_account_page import CreateAccountPage
 from .main_gui import MainGUI
-
-
-load_dotenv(dotenv_path="p.env")
-
-db_connection = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    port=os.getenv("DB_PORT"),
-    database=os.getenv("DB_DATABASE"),
-)
 
 
 class MainApplication(ctk.CTk):
@@ -49,7 +36,7 @@ class MainApplication(ctk.CTk):
             frame = F(
                 parent=self.container,
                 controller=self,
-                db_connection=db_connection
+                db_connection=db_connection()
             )
             self.frames[page_name] = frame
             frame.place(relwidth=1, relheight=1)
@@ -65,7 +52,7 @@ class MainApplication(ctk.CTk):
             frame = F(
                 parent=self.container,
                 controller=self,
-                db_connection=db_connection
+                db_connection=db_connection()
             )
             self.frames[page_name] = frame
             frame.place(relwidth=1, relheight=1)
