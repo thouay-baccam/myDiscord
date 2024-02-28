@@ -34,14 +34,24 @@ class MainApplication(ctk.CTk):
         super().__init__()
         self.title("Battias")
 
-        self.container = ctk.CTkFrame(self, width=400, height=500)
-        self.container.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+        self.container = ctk.CTkFrame(
+            self,
+            width=400,
+            height=500
+        )
+        self.container.place(
+            relx=0.5,
+            rely=0.5,
+            anchor=ctk.CENTER
+        )
 
         self.frames = {}
         for F in (StartupPage, LoginPage, CreateAccountPage):
             page_name = F.__name__
             frame = F(
-                parent=self.container, controller=self, db_connection=db_connection
+                parent=self.container,
+                controller=self,
+                db_connection=db_connection
             )
             self.frames[page_name] = frame
             frame.place(relwidth=1, relheight=1)
@@ -49,10 +59,15 @@ class MainApplication(ctk.CTk):
         self.show_frame("StartupPage")
 
     def show_frame(self, page_name):
-        if page_name == "MainGUI" and page_name not in self.frames:
+        if (
+            page_name == "MainGUI" and
+            page_name not in self.frames
+        ):
             F = MainGUI
             frame = F(
-                parent=self.container, controller=self, db_connection=db_connection
+                parent=self.container,
+                controller=self,
+                db_connection=db_connection
             )
             self.frames[page_name] = frame
             frame.place(relwidth=1, relheight=1)
