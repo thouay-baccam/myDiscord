@@ -96,7 +96,8 @@ class CreateAccountPage(ctk.CTkFrame):
 
         if not password == verify_password:
             messagebox.showerror(
-                "Password Mismatch", "Passwords do not match. Please re-enter."
+                "Password Mismatch",
+                "Passwords do not match. Please re-enter."
             )
             return
 
@@ -115,12 +116,16 @@ class CreateAccountPage(ctk.CTkFrame):
 
         # Insert user data into the database
         cursor = self.db_connection.cursor()
-        insert_query = "INSERT INTO account (username, name, lastname, email, password) VALUES (%s, %s, %s, %s, %s)"
+        insert_query = (
+            "INSERT INTO account (username, name, lastname, email, password) "
+            "VALUES (%s, %s, %s, %s, %s)"
+        )
         user_data = (username, name, lastname, email, password)
         cursor.execute(insert_query, user_data)
         self.db_connection.commit()
         cursor.close()
 
         messagebox.showinfo(
-            "Account Created", "Your account has been created successfully."
+            "Account Created",
+            "Your account has been created successfully."
         )
