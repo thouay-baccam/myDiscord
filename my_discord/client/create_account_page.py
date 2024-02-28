@@ -1,12 +1,13 @@
 # create_account_page.py
 
 # Standard library
-import hashlib
 from tkinter import messagebox
 
 # Third-party libraries
-import mysql.connector
 import customtkinter as ctk
+
+# Local modules
+from .create_account_backend import attempt_create_account
 
 
 class CreateAccountPage(ctk.CTkFrame):
@@ -34,17 +35,17 @@ class CreateAccountPage(ctk.CTkFrame):
         self.name_entry.pack()
 
         # Last Name Entry
-        self.lastname_label = ctk.CTkLabel(
+        self.last_name_label = ctk.CTkLabel(
             self,
             text="Last Name"
         )
-        self.lastname_label.pack(pady=(10, 0))
-        self.lastname_entry = ctk.CTkEntry(
+        self.last_name_label.pack(pady=(10, 0))
+        self.last_name_entry = ctk.CTkEntry(
             self,
             width=200,
             placeholder_text="Last Name"
         )
-        self.lastname_entry.pack()
+        self.last_name_entry.pack()
 
         # Email Entry
         self.email_label = ctk.CTkLabel(self, text="Email")
@@ -85,7 +86,7 @@ class CreateAccountPage(ctk.CTkFrame):
         self.create_account_button = ctk.CTkButton(
             self,
             text="Create Account",
-            command=self.attempt_create_account
+            command=self.show_attempt_create_account
         )
         self.create_account_button.pack(pady=20)
 
@@ -97,69 +98,16 @@ class CreateAccountPage(ctk.CTkFrame):
         )
         self.back_button.pack()
 
-    def is_valid_password(self, password):
-        # Check if the password meets the specified criteria
-        has_uppercase = any(char.isupper() for char in password)
-        has_lowercase = any(char.islower() for char in password)
-        has_digit = any(char.isdigit() for char in password)
-        has_special = any(not char.isalnum() for char in password)
-
-        return has_uppercase and has_lowercase and has_digit and has_special
-
-    def hash_password(self, password):
-        password = bytes(password, "utf-8")
-        hashed = hashlib.sha256()
-        hashed.update(password)
-        hashed_password = hashed.hexdigest()
-        return hashed_password
-
-    def attempt_create_account(self):
-        name = self.name_entry.get()
-        lastname = self.lastname_entry.get()
-        email = self.email_entry.get()
-        password = self.password_entry.get()
-        verify_password = self.verify_password_entry.get()
-
-        if not (email and password and verify_password):
-            messagebox.showerror(
-                "Creation Failed",
-                "Please fill in all fields."
-            )
-            return
-
-        if not password == verify_password:
-            messagebox.showerror(
-                "Password Mismatch",
-                "Passwords do not match. Please re-enter."
-            )
-            return
-
-        if not self.is_valid_password(password):
-            messagebox.showerror(
-                "Invalid Password",
-                "Password must have one uppercase, "
-                "one lowercase, one number, "
-                "and one special character.",
-            )
-            return
-
-        # Combine name and lastname to create the username
-        username = name + lastname
-        password = self.hash_password(password)
-
-        # Insert user data into the database
-        cursor = self.db_connection.cursor()
-        insert_query = (
-            "INSERT INTO account "
-            "(username, name, lastname, email, password) "
-            "VALUES (%s, %s, %s, %s, %s)"
+    def show_attempt_create_account(self):
+        result = attempt_create_account(
+            self.db_connection,
+            self.name_entry.get(),
+            self.last_name_entry.get(),
+            self.email_entry.get(),
+            self.password_entry.get(),
+            self.verify_password_entry.get()
         )
-        user_data = (username, name, lastname, email, password)
-        cursor.execute(insert_query, user_data)
-        self.db_connection.commit()
-        cursor.close()
-
         messagebox.showinfo(
-            "Account Created",
-            "Your account has been created successfully."
+            result[0],
+            result[1]
         )
