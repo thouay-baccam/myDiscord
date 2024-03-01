@@ -50,6 +50,15 @@ def attempt_create_account(
             "Please fill in all fields."
         )
 
+    if not is_valid_email(email):
+        return (
+            "Invalid E-Mail Address",
+            "It needs to include an '@' symbol, "
+            "and a domain extension\n"
+            "Only use ASCII letters, numbers, "
+            "hyphens, underscores and periods."
+        )
+
     if password != verify_password:
         return (
             "Password Mismatch",
