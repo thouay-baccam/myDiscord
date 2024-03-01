@@ -24,7 +24,7 @@ class ChatBackend:
             self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.port = port
-        self.client_socket.connect(('SENSITIVE_DATA', self.port))
+        self.client_socket.connect((IP_ADDRESS, self.port))
         
         # Create a new receive_thread and start it
         self.receive_thread = threading.Thread(target=self.receive_messages)
