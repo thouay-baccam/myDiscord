@@ -1,6 +1,17 @@
 import hashlib
+import re
 
 import mysql.connector
+
+def is_valid_email(email):
+    email_regex = r"([a-zA-Z\d_\-.]+)@([a-zA-Z\d_\-.]+)\.([a-zA-Z]+)"
+
+    result = re.match(email_regex, email)
+
+    if not result:
+        return False
+
+    return result.group() == email
 
 
 def is_valid_password(password):
