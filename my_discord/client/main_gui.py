@@ -1,5 +1,3 @@
-# main_gui.py
-
 import datetime
 import tkinter as tk
 from functools import partial
@@ -11,18 +9,16 @@ from .member_list import MemberList
 from .channel_list import ChannelList
 from .role import Role
 
-
 class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
     def __init__(self, parent, controller, db_connection):  # Add parent, controller, and db_connection as arguments
         ctk.set_appearance_mode("dark")
         super().__init__(parent)
         self.controller = controller
         self.db_connection = db_connection
-        self.backend = ChatBackend(self, controller.username)  # Pass the MainGUI instance to ChatBackend
+        self.backend = ChatBackend(self, self.controller.username, db_connection)
         self.controller.bind('<Return>', lambda event: self.send_message())
         self.controller.configure(bg='black')
 
-        
         # Create a textbox widget
         self.textbox = ctk.CTkTextbox(self, width=470, height=440)
         self.textbox.place(x=265, y=50)
@@ -71,6 +67,21 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
         # Keep track of the currently highlighted label
         self.highlighted_label = None
+
+        # Check if the user has any unread messages when they log in
+        self.check_unread_messages()
+
+    def check_unread_messages(self):
+        # Query the database to get the number of unread messages for the user
+        cursor = self.db_connection.cursor()
+        query = "SELECT COUNT(*) FROM messages WHERE channel_id = %s AND read_by IS NULL AND sent_by != %s"
+        cursor.execute(query, (self.backend.channel_id, self.controller.username))
+        result = cursor.fetchone()
+        cursor.close()
+
+        # If there are any unread messages, display a notification
+        if result[0] > 0:
+            messagebox.showinfo("Unread Messages", f"You have {result[0]} unread messages in this channel.")
 
     def on_member_click(self, event):
         # Remove highlight from the previously clicked label
@@ -158,6 +169,13 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         # Call the backend connect method
         self.backend.connect(port)
 
+        # Mark all messages in the channel as read
+        cursor = self.db_connection.cursor()
+        query = "UPDATE messages SET read_by = %s WHERE channel_id = %s AND read_by IS NULL"
+        cursor.execute(query, (self.controller.username, self.backend.channel_id))
+        self.db_connection.commit()
+        cursor.close()
+
     def select_channel(self, event, channel, port):
         self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
 
@@ -189,7 +207,6 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
             label.bind("<ButtonRelease-1>", self.on_member_click)
             label.bind("<ButtonRelease-3>", self.on_member_right_click)
             label.pack()
-
 
     def disconnect(self):
         self.backend.client_socket.close()  # Close the socket connection
