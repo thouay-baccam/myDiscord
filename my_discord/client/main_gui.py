@@ -159,6 +159,8 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.backend.connect(port)
 
     def select_channel(self, event, channel, port):
+        # You need to unbind the button or else the commands will stack
+        self.connect_button.unbind("<Button-1>")
         self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
 
     def update_channel_list(self):
