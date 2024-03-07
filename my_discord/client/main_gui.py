@@ -282,6 +282,9 @@ class MainGUI(ctk.CTkFrame):
 
 
     def disconnect(self):
+        self.backend.client_socket.close()  # Close the socket connection
+        self.controller.show_frame("StartupPage")  # Go back to the startup page
+
         # Close the socket connection
         self.backend.client_socket.close()
         # Close the application
