@@ -47,7 +47,7 @@ class ChatBackend:
         # Add the username, current time, and message
         message_with_username_and_time = (
             f"{self.username} "
-            f"[{datetime.datetime.now().strftime('%H:%M:%S')}] "
+            f"[{datetime.datetime.now().strftime('%X')}] "
             f": \n{message}"
         )
         self.client_socket.send(
