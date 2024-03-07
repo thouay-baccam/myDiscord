@@ -12,19 +12,29 @@ from .channel_list import ChannelList
 from .role import Role
 
 
-class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
-    def __init__(self, parent, controller, db_connection):  # Add parent, controller, and db_connection as arguments
+# Inherit from ctk.CTkFrame
+class MainGUI(ctk.CTkFrame):
+    # Add parent, controller, and db_connection as arguments
+    def __init__(self, parent, controller, db_connection):
         ctk.set_appearance_mode("dark")
         super().__init__(parent)
         self.controller = controller
         self.db_connection = db_connection
-        self.backend = ChatBackend(self, controller.username)  # Pass the MainGUI instance to ChatBackend
-        self.controller.bind('<Return>', lambda event: self.send_message())
+        # Pass the MainGUI instance to ChatBackend
+        self.backend = ChatBackend(self, controller.username)
+        self.controller.bind(
+            '<Return>',
+            lambda event: self.send_message()
+        )
         self.controller.configure(bg='black')
 
         
         # Create a textbox widget
-        self.textbox = ctk.CTkTextbox(self, width=470, height=440)
+        self.textbox = ctk.CTkTextbox(
+            self,
+            width=470, 
+            height=440
+        )
         self.textbox.place(x=265, y=50)
 
         # Create an entry widget
@@ -32,41 +42,87 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.entry.place(x=265, y=500)
 
         # Create a send button 
-        self.send_button = ctk.CTkButton(self, text="Send", width=70, height=30, command=self.send_message)
+        self.send_button = ctk.CTkButton(
+            self,
+            text="Send",
+            width=70,
+            height=30,
+            command=self.send_message
+        )
         self.send_button.place(x=672, y=500)
 
         # Create a connect button
-        self.connect_button = ctk.CTkButton(self, text="Connect", width=70, height=30)
+        self.connect_button = ctk.CTkButton(
+            self,
+            text="Connect",
+            width=70,
+            height=30
+        )
         self.connect_button.place(x=100, y=520)
 
         # Create a disconnect button
-        self.disconnect_button = ctk.CTkButton(self, text="Disconnect", width=70, height=20, command=self.disconnect)
+        self.disconnect_button = ctk.CTkButton(
+            self,
+            text="Disconnect",
+            width=70,
+            height=20,
+            command=self.disconnect
+        )
         self.disconnect_button.place(x=820, y=570)
 
         # Create scrollable frames/lists + labels
-        self.voice_channels = ctk.CTkScrollableFrame(self, width=200, height=100)
+        self.voice_channels = ctk.CTkScrollableFrame(
+            self,
+            width=200,
+            height=100
+        )
         self.voice_channels.place(x=30, y=50)
-        self.voice_label = ctk.CTkLabel(self, text="Voice Channels", width=200)
+        self.voice_label = ctk.CTkLabel(
+            self,
+            text="Voice Channels",
+            width=200
+        )
         self.voice_label.place(x=30, y=20)
 
-        self.text_channels = ctk.CTkScrollableFrame(self, width=200, height=100)
+        self.text_channels = ctk.CTkScrollableFrame(
+            self,
+            width=200,
+            height=100
+        )
         self.text_channels.place(x=30, y=300)
-        self.text_label = ctk.CTkLabel(self, text="Text Channels", width=200)
+        self.text_label = ctk.CTkLabel(
+            self,
+            text="Text Channels",
+            width=200
+        )
         self.text_label.place(x=30, y=270)
 
         self.channel_list = ChannelList(db_connection)
         self.update_channel_list()
 
-        self.members_list = ctk.CTkScrollableFrame(self, width=200, height=470)
+        self.members_list = ctk.CTkScrollableFrame(
+            self,
+            width=200,
+            height=470
+        )
         self.members_list.place(x=750, y=50)
-        self.members_label = ctk.CTkLabel(self, text="Members List", width=200)
+        self.members_label = ctk.CTkLabel(
+            self,
+            text="Members List",
+            width=200
+        )
         self.members_label.place(x=750, y=20)
 
         self.member_list = MemberList(db_connection)
         self.update_member_list()
 
         # Create a labelbox that will change dynamically (for usernames)
-        self.dynamic_label = ctk.CTkLabel(self, text=controller.username, width=200)  # Set the text to the username
+        # Set the text to the username
+        self.dynamic_label = ctk.CTkLabel(
+            self,
+            text=controller.username,
+            width=200
+        )
         self.dynamic_label.place(x=760, y=540)
 
         # Keep track of the currently highlighted label
@@ -82,11 +138,12 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
             return
 
         if self.highlighted_label:
-            self.highlighted_label.config(fg="white")  # Change color back to black
+            self.highlighted_label.config(fg="white")
 
         # Highlight the clicked member's name
         clicked_label = event.widget
-        clicked_label.config(fg="#00FF00")  # You can customize the color
+        # You can customize the color
+        clicked_label.config(fg="#00FF00")
         self.highlighted_label = clicked_label
 
     def on_member_right_click(self, event):
@@ -98,18 +155,22 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         menu = tk.Menu(self, tearoff=0)
         menu.add_command(
             label="Assign roles",
-            command=partial(self.open_role_assignment_window, selected_username)
+            command=partial(
+                self.open_role_assignment_window,
+                selected_username
+            )
         )
 
         # Show the context menu at the clicked position
         menu.post(event.x_root, event.y_root)
 
     def open_role_assignment_window(self, selected_username):
-        # Implement your logic for role assignment window here
-        # You can create a new Toplevel window and add widgets for role assignment
         role_assignement_window = ctk.CTkToplevel(self)
 
-        role_assign_frame = ctk.CTkFrame(role_assignement_window, border_width = 0)
+        role_assign_frame = ctk.CTkFrame(
+            role_assignement_window,
+            border_width = 0
+        )
         role_assign_frame.pack(padx=20, pady=20)
 
         role_names = {
@@ -138,7 +199,10 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         confirm_button = ctk.CTkButton(
             role_assign_frame,
             text="Confirmer",
-            command=partial(confirm_on_click, selected_username)
+            command=partial(
+                confirm_on_click,
+                selected_username
+            )
         )
         confirm_button.pack(padx=10, pady=10)
 
@@ -159,9 +223,13 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
         self.backend.connect(port)
 
     def select_channel(self, event, channel, port):
-        # You need to unbind the button or else the commands will stack
+        # You need to unbind the button
+        # or else the commands will stack
         self.connect_button.unbind("<Button-1>")
-        self.connect_button.bind("<Button-1>", lambda event: self.connect_to_channel(port))
+        self.connect_button.bind(
+            "<Button-1>",
+            lambda event: self.connect_to_channel(port)
+        )
 
     def update_channel_list(self):
         # Get all channels
@@ -173,8 +241,19 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
         # Add each channel to the text_channels
         for channel, port in channels:
-            label = ctk.CTkLabel(self.text_channels, text=channel)
-            label.bind("<Button-1>", lambda event, channel=channel, port=port: self.select_channel(event, channel, port))
+            label = ctk.CTkLabel(
+                self.text_channels,
+                text=channel
+            )
+            label.bind(
+                "<Button-1>",
+                lambda event,
+                channel=channel,
+                port=port: self.select_channel(
+                    event, 
+                    channel,
+                    port)
+            )
             label.pack()
 
     def update_member_list(self):
@@ -187,15 +266,26 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
         # Add each username to the members_list
         for username in usernames:
-            label = ctk.CTkLabel(self.members_list, text=username)
-            label.bind("<ButtonRelease-1>", self.on_member_click)
-            label.bind("<ButtonRelease-3>", self.on_member_right_click)
+            label = ctk.CTkLabel(
+                self.members_list,
+                text=username
+            )
+            label.bind(
+                "<ButtonRelease-1>",
+                self.on_member_click
+            )
+            label.bind(
+                "<ButtonRelease-3>",
+                self.on_member_right_click
+            )
             label.pack()
 
 
     def disconnect(self):
-        self.backend.client_socket.close()  # Close the socket connection
-        self.controller.quit()  # Close the application
+        # Close the socket connection
+        self.backend.client_socket.close()
+        # Close the application
+        self.controller.quit()
 
     def send_message(self, message=None):
         # Get the message from the entry if not provided
