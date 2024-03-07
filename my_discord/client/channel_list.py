@@ -10,7 +10,8 @@ class ChannelList:
         result = cursor.fetchall()
         cursor.close()
 
-        # Convert the result to a list of (channel_name, port) tuples
+        # Convert the result to a list of
+        # (channel_name, port) tuples
         channels = [(row[0], row[1]) for row in result]
         return channels
 
