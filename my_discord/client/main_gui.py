@@ -195,7 +195,8 @@ class MainGUI(ctk.CTkFrame):  # Inherit from ctk.CTkFrame
 
     def disconnect(self):
         self.backend.client_socket.close()  # Close the socket connection
-        self.controller.quit()  # Close the application
+        self.controller.show_frame("StartupPage")  # Go back to the startup page
+
 
     def send_message(self, message=None):
         # Get the message from the entry if not provided
