@@ -4,7 +4,11 @@ import re
 import mysql.connector
 
 def is_valid_email(email):
-    email_regex = r"([a-zA-Z\d_\-.]+)@([a-zA-Z\d_\-.]+)\.([a-zA-Z]+)"
+    email_regex = (
+        r"([a-zA-Z\d_\-.]+)"
+        r"@([a-zA-Z\d_\-.]+)"
+        r"\.([a-zA-Z]+)"
+    )
 
     result = re.match(email_regex, email)
 
